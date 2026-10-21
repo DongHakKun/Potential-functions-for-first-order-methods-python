@@ -2,7 +2,7 @@ from pathlib import Path
 import numpy as np
 import cvxpy as cp
 import matplotlib.pyplot as plt
-from saveData import saveData
+from saveData import saveData, solve
 
 # This code simply checks feasibility of Theorem 7 for primal averaging,
 # (potential function is partially imposed and only the \sum e_k is minimized.)
@@ -196,7 +196,7 @@ elif solver == "SDPA":
 elif solver == "MOSEK":
     solver_opt["mosek_params"] = {"MSK_DPAR_INTPNT_CO_TOL_PFEAS": tolerance}
 solverDetails = cp.Problem(cp.Minimize(obj), cons)
-solverDetails.solve(**solver_opt)
+solve(solverDetails, **solver_opt)
 
 # Try to grasp what happens by plotting!
 if pplot:

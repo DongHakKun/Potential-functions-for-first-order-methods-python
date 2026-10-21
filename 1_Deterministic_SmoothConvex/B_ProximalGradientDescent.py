@@ -5,7 +5,7 @@ import cvxpy as cp
 import matplotlib.pyplot as plt
 import numpy as np
 
-from saveData import saveData
+from saveData import saveData, solve
 
 # SOLVER OPTIONS
 verbose = 1
@@ -227,7 +227,7 @@ if solver in ("CLARABEL", "SDPA"):
             solver_cons.append(cons_SDP[k][0, :] == 0)
         solver_cons.append(cons_SDP[k][np.ix_(principal, principal)] << 0)
 problem = cp.Problem(cp.Minimize(-obj), solver_cons)
-solverDetails = problem.solve(**solver_opt)
+solverDetails = solve(problem, **solver_opt)
 if problem.status not in (cp.OPTIMAL, cp.OPTIMAL_INACCURATE):
     raise RuntimeError(f"The SDP returned {problem.status}; no solution can be plotted or saved.")
 print(f"status={problem.status}, objective={obj.value:.10g}")

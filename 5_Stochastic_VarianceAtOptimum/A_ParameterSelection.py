@@ -4,7 +4,7 @@ import cvxpy as cp
 import matplotlib.pyplot as plt
 import numpy as np
 
-from saveData import saveData
+from saveData import saveData, solve
 
 # SOLVER OPTIONS
 verbose = 1
@@ -317,7 +317,7 @@ if (solver in ('CLARABEL', 'SDPA') and m == 0
             solver_cons.extend([solver_M[solver_pos, :] == 0,
                                 solver_M[np.ix_(solver_keep, solver_keep)] << 0])
 solverDetails = cp.Problem(cp.Minimize(obj), solver_cons)
-solverDetails.solve(**solver_opt)
+solve(solverDetails, **solver_opt)
 print('Solver status:', solverDetails.status, 'objective:', solverDetails.value)
 
 # Try to grasp what happens...

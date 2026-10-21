@@ -2,7 +2,7 @@
 
 A file-by-file Python translation of the [MATLAB implementation](https://github.com/AdrienTaylor/Potential-functions-for-first-order-methods) by Adrien Taylor and Francis Bach. Each experiment contains its setup, semidefinite program, plots, and saving code directly. The original directories and 16-file MATLAB/Python correspondence are retained.
 
-**Validation snapshot, 2026-10-21:** all 11 original MATLAB experiments were executed with MOSEK, and all 11 Python experiments were executed with MOSEK, CLARABEL, and SDPA Multiprecision. Both MOSEK implementations and SDPA returned `optimal` for every listed experiment. CLARABEL returned eight `optimal` and three `optimal_inaccurate` results. Numerical differences and original-constraint violations are reported below; identical historical outputs have not been established.
+**Validation snapshot, 2026-10-21:** all 11 experiments plus four additional runs at unchanged source defaults were executed in MATLAB and Python with MOSEK. All 18 optimization calls succeeded in each language, with identical objective values. Every compared potential coefficient and multiplier matched exactly (48,567 scalar values across 15 setups). Free-solver results and differences from the upstream saved data are shown below.
 
 ## Installation and usage
 
@@ -40,60 +40,69 @@ All runs use `L=1`, `m=0`, stochastic `n=2`, bounded-variance `alpha=0`, and wea
 | Experiment (N, relax) | Quantity | Upstream saved | MATLAB + MOSEK | Python + MOSEK | Python + CLARABEL | Python + SDPA-MP |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
 | Gradient descent (100, 0) | τ | [10201](1_Deterministic_SmoothConvex/SaveData/GradientD.dat) | 10200.949481 | 10200.949481 | 10200.986092 | 10201.000000 |
-| Proximal gradient (100, 0) | τ | [9999.9](1_Deterministic_SmoothConvex/SaveData/ProxGradientD.dat) | 9999.628875 | 9999.714829 | 9999.983113 | 10000.000000 |
-| First accelerated method (100, 2) | τ | [4089.5](1_Deterministic_SmoothConvex/SaveData/FastGradientD1.dat) | 4088.941623 | 4088.997507 | 4086.002196 | 4086.012189 |
-| Second accelerated method (100, 0) | τ | [5270.4](1_Deterministic_SmoothConvex/SaveData/FastGradientD2.dat) | 5270.391539 | 5270.391549 | 5270.391935 | 5270.391539 |
-| Bounded-variance SGD (100, 0) | Final τ | [201](2_Stochastic_BoundedVariance/SaveData/SGD.dat) | 200.999962 | 200.999951 | 200.999980 | 200.999990 |
-| Bounded-variance SGD (100, 0) | Σe | [2057.5](2_Stochastic_BoundedVariance/SaveData/SGD.dat) | 2057.522911 | 2057.254076 | 2060.454469 | 2060.553609 |
-| SGD with averaging (100, 0) | Final τ | [102](2_Stochastic_BoundedVariance/SaveData/SGD_Averaging.dat) | 101.999903 | 101.999901 | 101.999929 | 101.999990 |
-| SGD with averaging (100, 0) | Σe | [48.676](2_Stochastic_BoundedVariance/SaveData/SGD_Averaging.dat) | 48.634944 | 48.631663 | 48.661429 | 49.324009 |
-| SGD with primal averaging (100, 0) | Σe | [49.5](2_Stochastic_BoundedVariance/SaveData/SGD_Primal_Averaging.dat) | 49.500010 | 49.500013 | 49.500409 | 49.500000 |
-| SGD at averaged point (100, 0) | Final τ | [100](2_Stochastic_BoundedVariance/SaveData/SGD_Evaluation_AtAveragedPoint.dat) | 99.999911 | 99.999962 | 99.997369 | 99.999990 |
-| SGD at averaged point (100, 0) | Σe | [49.5](2_Stochastic_BoundedVariance/SaveData/SGD_Evaluation_AtAveragedPoint.dat) | 49.499973 | 49.500043 | 49.498726 | 49.499995 |
-| Overparametrized SGD (100, 3) | τ | [100.16](3_Stochastic_Overparametrized/SaveData/ParameterSelection.dat) | 100.026848 | 100.052824 | 99.999243 | 100.000000 |
+| Proximal gradient (100, 0) | τ | [9999.9](1_Deterministic_SmoothConvex/SaveData/ProxGradientD.dat) | 9999.628875 | 9999.628875 | 9999.983113 | 10000.000000 |
+| First accelerated method (100, 2) | τ | [4089.5](1_Deterministic_SmoothConvex/SaveData/FastGradientD1.dat) | 4088.941623 | 4088.941623 | 4086.002196 | 4086.012189 |
+| Second accelerated method (100, 0) | τ | [5270.4](1_Deterministic_SmoothConvex/SaveData/FastGradientD2.dat) | 5270.391539 | 5270.391539 | 5270.391935 | 5270.391539 |
+| Bounded-variance SGD (100, 0) | Final τ | [201](2_Stochastic_BoundedVariance/SaveData/SGD.dat) | 200.999962 | 200.999962 | 200.999980 | 200.999990 |
+| Bounded-variance SGD (100, 0) | Σe | [2057.5](2_Stochastic_BoundedVariance/SaveData/SGD.dat) | 2057.522911 | 2057.522911 | 2060.454469 | 2060.553609 |
+| SGD with averaging (100, 0) | Final τ | [102](2_Stochastic_BoundedVariance/SaveData/SGD_Averaging.dat) | 101.999903 | 101.999903 | 101.999929 | 101.999990 |
+| SGD with averaging (100, 0) | Σe | [48.676](2_Stochastic_BoundedVariance/SaveData/SGD_Averaging.dat) | 48.634944 | 48.634944 | 48.661429 | 49.324009 |
+| SGD with primal averaging (100, 0) | Σe | [49.5](2_Stochastic_BoundedVariance/SaveData/SGD_Primal_Averaging.dat) | 49.500010 | 49.500010 | 49.500409 | 49.500000 |
+| SGD at averaged point (100, 0) | Final τ | [100](2_Stochastic_BoundedVariance/SaveData/SGD_Evaluation_AtAveragedPoint.dat) | 99.999911 | 99.999911 | 99.997369 | 99.999990 |
+| SGD at averaged point (100, 0) | Σe | [49.5](2_Stochastic_BoundedVariance/SaveData/SGD_Evaluation_AtAveragedPoint.dat) | 49.499973 | 49.499973 | 49.498726 | 49.499995 |
+| Overparametrized SGD (100, 3) | τ | [100.16](3_Stochastic_Overparametrized/SaveData/ParameterSelection.dat) | 100.026848 | 100.026848 | 99.999243 | 100.000000 |
 | Weak-growth primal averaging (100, 1) | Σe (certificate) | [3.1255](4_Stochastic_WeakGrowth/SaveData/SGD_Primal_Averaging.dat) | 3.125122 | 3.125122 | 3.125030 | 3.125002 |
-| Variance at optimum (5, 3) | Σe | [20.05](5_Stochastic_VarianceAtOptimum/SaveData/ParameterSelection.dat) | 20.232957 | 20.224608 | 20.249994 | 20.250000 |
+| Variance at optimum (5, 3) | Σe | [20.05](5_Stochastic_VarianceAtOptimum/SaveData/ParameterSelection.dat) | 20.232957 | 20.232957 | 20.249994 | 20.250000 |
 
 For two-stage SGD, each run follows the original procedure: maximize τ, then minimize Σe subject to `tau >= first_tau - 1e-5`. Each backend uses its own computed first τ, so the second-stage numerical feasible sets can differ. Final τ and Σe are both reported.
 
-The overparametrized saved coefficients are consistent with `relax=3`; historical settings do not exclude `relax=1`. Weak growth minimizes zero: its Σe is a nonunique certificate coefficient. The variance saved file has five iterations, while the current script default has ten. Additional SDPA runs at the unchanged defaults returned variance `N=10`: `40.4999999933`, overparametrized `relax=0`: `116.2220917167`, proximal `relax=2`: `10099.9999999997`, and first accelerated `relax=0`: `4086.0121897908`.
+The overparametrized saved coefficients are consistent with `relax=3`; historical settings do not exclude `relax=1`. Weak growth minimizes zero: its Σe is a nonunique certificate coefficient. The variance saved file has five iterations, while the current script default has ten.
 
-The next table uses the newly executed MATLAB + MOSEK result as the baseline. Δ is `Python - MATLAB`; the signed percentage is `100 * Δ / abs(MATLAB)`.
+Additional runs at the unchanged source defaults:
 
-| Experiment / quantity | Python MOSEK Δ (Δ%) | CLARABEL Δ (Δ%) | SDPA-MP Δ (Δ%) |
-| --- | ---: | ---: | ---: |
-| Gradient descent — τ | +0 (+0.000000%) | +0.036611 (+0.000359%) | +0.0505193 (+0.000495%) |
-| Proximal gradient — τ | +0.0859535 (+0.000860%) | +0.354238 (+0.003543%) | +0.371125 (+0.003711%) |
-| First accelerated method — τ | +0.0558835 (+0.001367%) | -2.93943 (-0.071887%) | -2.92943 (-0.071643%) |
-| Second accelerated method — τ | +1.02388e-05 (+0.000000%) | +0.000395997 (+0.000008%) | -2.4084e-07 (-0.000000%) |
-| Bounded-variance SGD — Final τ | -1.11201e-05 (-0.000006%) | +1.73046e-05 (+0.000009%) | +2.75975e-05 (+0.000014%) |
-| Bounded-variance SGD — Σe | -0.268835 (-0.013066%) | +2.93156 (+0.142480%) | +3.0307 (+0.147298%) |
-| SGD with averaging — Final τ | -2.3736e-06 (-0.000002%) | +2.56137e-05 (+0.000025%) | +8.69529e-05 (+0.000085%) |
-| SGD with averaging — Σe | -0.00328078 (-0.006746%) | +0.0264849 (+0.054457%) | +0.689065 (+1.416810%) |
-| SGD with primal averaging — Σe | +3.50181e-06 (+0.000007%) | +0.000398988 (+0.000806%) | -9.79673e-06 (-0.000020%) |
-| SGD at averaged point — Final τ | +5.12351e-05 (+0.000051%) | -0.00254191 (-0.002542%) | +7.91467e-05 (+0.000079%) |
-| SGD at averaged point — Σe | +6.96442e-05 (+0.000141%) | -0.00124723 (-0.002520%) | +2.19794e-05 (+0.000044%) |
-| Overparametrized SGD — τ | +0.0259758 (+0.025969%) | -0.0276052 (-0.027598%) | -0.026848 (-0.026841%) |
-| Weak-growth primal averaging — Σe (certificate) | +1.63177e-07 (+0.000005%) | -9.23087e-05 (-0.002954%) | -0.000120111 (-0.003843%) |
-| Variance at optimum — Σe | -0.00834942 (-0.041266%) | +0.0170371 (+0.084205%) | +0.0170428 (+0.084233%) |
+| Experiment (N, relax) | Quantity | MATLAB + MOSEK | Python + MOSEK | Python + SDPA-MP |
+| --- | --- | ---: | ---: | ---: |
+| Proximal gradient (100, 2) | τ | 10099.896973070 | 10099.896973070 | 10100.000000000 |
+| First accelerated method (100, 0) | τ | 4093.633333459 | 4093.633333459 | 4086.012189791 |
+| Overparametrized SGD (100, 0) | τ | 116.239282126 | 116.239282126 | 116.222091717 |
+| Variance at optimum (10, 3) | Σe | 40.454211154 | 40.454211154 | 40.499999993 |
+
+The next table compares free solvers against the freshly executed MATLAB + MOSEK result. Δ is `Python - MATLAB`; the signed percentage is `100 * Δ / abs(MATLAB)`.
+
+| Experiment / quantity | CLARABEL Δ (Δ%) | SDPA-MP Δ (Δ%) |
+| --- | ---: | ---: |
+| Gradient descent — τ | +0.036611 (+0.000359%) | +0.0505193 (+0.000495%) |
+| Proximal gradient — τ | +0.354238 (+0.003543%) | +0.371125 (+0.003711%) |
+| First accelerated method — τ | -2.93943 (-0.071887%) | -2.92943 (-0.071643%) |
+| Second accelerated method — τ | +0.000395997 (+0.000008%) | -2.4084e-07 (-0.000000%) |
+| Bounded-variance SGD — Final τ | +1.73046e-05 (+0.000009%) | +2.75975e-05 (+0.000014%) |
+| Bounded-variance SGD — Σe | +2.93156 (+0.142480%) | +3.0307 (+0.147298%) |
+| SGD with averaging — Final τ | +2.56137e-05 (+0.000025%) | +8.69529e-05 (+0.000085%) |
+| SGD with averaging — Σe | +0.0264849 (+0.054457%) | +0.689065 (+1.416810%) |
+| SGD with primal averaging — Σe | +0.000398988 (+0.000806%) | -9.79673e-06 (-0.000020%) |
+| SGD at averaged point — Final τ | -0.00254191 (-0.002542%) | +7.91467e-05 (+0.000079%) |
+| SGD at averaged point — Σe | -0.00124723 (-0.002520%) | +2.19794e-05 (+0.000044%) |
+| Overparametrized SGD — τ | -0.0276052 (-0.027598%) | -0.026848 (-0.026841%) |
+| Weak-growth primal averaging — Σe (certificate) | -9.23087e-05 (-0.002954%) | -0.000120111 (-0.003843%) |
+| Variance at optimum — Σe | +0.0170371 (+0.084205%) | +0.0170428 (+0.084233%) |
 
 ### Original-constraint checks
 
-The following maximum absolute violations are measured at the final returned solution, including every original LMI, equality, nonnegativity condition, and the second-stage τ floor. Both MOSEK implementations and SDPA returned successful statuses in all rows; the CLARABEL status is shown explicitly.
+The following maximum absolute violations are measured at the final returned solution for the 11 comparison settings, including every original LMI, equality, nonnegativity condition, and the second-stage τ floor. Both MOSEK implementations and SDPA returned successful statuses in all rows; the CLARABEL status is shown explicitly.
 
 | Experiment | MATLAB MOSEK | Python MOSEK | CLARABEL | SDPA-MP | CLARABEL status |
 | --- | ---: | ---: | ---: | ---: | --- |
 | Gradient descent | 1.178e-07 | 1.178e-07 | 1.761e-08 | 3.638e-12 | optimal |
-| Proximal gradient | 5.651e-07 | 4.074e-07 | 2.881e-08 | 3.638e-12 | optimal |
-| First accelerated method | 3.372e-07 | 3.512e-07 | 7.146e-10 | 2.010e-12 | optimal |
-| Second accelerated method | 1.364e-12 | 3.721e-11 | 5.352e-09 | 1.033e-12 | optimal |
-| Bounded-variance SGD | 3.649e-05 | 4.185e-05 | 2.039e-08 | 7.629e-14 | optimal |
-| SGD with averaging | 8.780e-05 | 8.954e-05 | 4.483e-05 | 1.833e-13 | optimal_inaccurate |
-| SGD with primal averaging | 5.702e-07 | 8.059e-07 | 7.363e-07 | 3.838e-13 | optimal_inaccurate |
-| SGD at averaged point | 9.111e-07 | 3.541e-06 | 3.834e-07 | 3.553e-13 | optimal_inaccurate |
-| Overparametrized SGD | 2.978e-08 | 8.264e-08 | 3.826e-09 | 7.422e-13 | optimal |
-| Weak-growth primal averaging | 1.034e-08 | 1.037e-08 | 1.597e-10 | 3.286e-13 | optimal |
-| Variance at optimum | 2.551e-09 | 5.034e-09 | 2.026e-09 | 1.375e-13 | optimal |
+| Proximal gradient | 5.651e-07 | 5.651e-07 | 2.881e-08 | 3.638e-12 | optimal |
+| First accelerated method | 3.372e-07 | 3.372e-07 | 7.146e-10 | 2.010e-12 | optimal |
+| Second accelerated method | 1.364e-12 | 1.338e-12 | 5.352e-09 | 1.033e-12 | optimal |
+| Bounded-variance SGD | 3.649e-05 | 3.649e-05 | 2.039e-08 | 7.629e-14 | optimal |
+| SGD with averaging | 8.780e-05 | 8.780e-05 | 4.483e-05 | 1.833e-13 | optimal_inaccurate |
+| SGD with primal averaging | 5.702e-07 | 5.702e-07 | 7.363e-07 | 3.838e-13 | optimal_inaccurate |
+| SGD at averaged point | 9.111e-07 | 9.111e-07 | 3.834e-07 | 3.553e-13 | optimal_inaccurate |
+| Overparametrized SGD | 2.978e-08 | 2.978e-08 | 3.826e-09 | 7.422e-13 | optimal |
+| Weak-growth primal averaging | 1.034e-08 | 1.034e-08 | 1.597e-10 | 3.286e-13 | optimal |
+| Variance at optimum | 2.551e-09 | 2.551e-09 | 2.026e-09 | 1.375e-13 | optimal |
 
 A returned `optimal` status alone does not guarantee small absolute violations. For example, original MATLAB MOSEK violates the final τ floor by `3.65e-5` in SGD and `8.78e-5` in SGD with averaging. The lower noise coefficients in those runs do not establish a better feasible optimum.
 
@@ -130,6 +139,8 @@ The translation corrects an allocation-target typo for `fzk1` in bounded-varianc
 
 For CLARABEL and SDPA, proximal gradient, the first accelerated method, and the two parameter-selection scripts use an equivalent solver representation of singular PSD blocks. The original `cons` and variable objects are retained. Directions that the original constraints force to zero are expressed as equalities, and the remaining principal PSD blocks are submitted to the solver. Comments beside the solver call explain the equivalence and parameter guards. MOSEK receives the original full constraints. No stored solution or known optimum is inserted into a solve.
 
+For MOSEK, the local `saveData.py` helper preserves the original decision-variable declaration order and registers PSD coefficients through MOSEK's bulk block-triplet API, as YALMIP does. This resolves the numerical differences caused by the standard CVXPY interface in these experiments. The models and all original constraints remain in the experiment files.
+
 ## Validation
 
 The source reference is upstream commit [`78a089032dab4f4eceee6178531f55ba2cbc253d`](https://github.com/AdrienTaylor/Potential-functions-for-first-order-methods/tree/78a089032dab4f4eceee6178531f55ba2cbc253d).
@@ -141,8 +152,9 @@ The source reference is upstream commit [`78a089032dab4f4eceee6178531f55ba2cbc25
 | Cone coefficient-matrix entries compared | 6,362,598, including zeros; maximum absolute difference `2.7755575615628914e-17` |
 | Comparison tolerance | `2e-12` absolute and relative; original full PSD, equality, and nonnegativity constraints |
 | Full-sized affine comparison | All 11 table settings: ten at `N=100` and variance at `N=5`; 244,049,687 cone affine entries including zeros, maximum difference exactly zero; objective and variable observations also agree exactly |
-| Actual MATLAB/MOSEK execution | All 11 original experiments; all 14 optimization calls returned YALMIP code 0 |
-| Actual Python/MOSEK execution | All 11 comparison experiments; all 14 optimization calls returned `optimal` |
+| Actual MATLAB/MOSEK execution | All 11 original experiments plus four unchanged-default runs; all 18 calls returned YALMIP code 0 |
+| Actual Python/MOSEK execution | The same 15 setups; all 18 optimization calls returned `optimal` |
+| Actual returned-coefficient comparison | All 18 stages; 48,567 scalar values including potential coefficients and interpolation multipliers; maximum absolute difference exactly zero |
 | Native solution cross-evaluation | All 11 models and 14 stages: actual MATLAB solutions assigned to the Python variables; 58,720 full LMI/equality entries agree within `3.64e-12`; nonnegativity and τ-floor residuals also agree |
 | Free high-precision execution | All 11 comparison experiments plus four unchanged-default runs returned `optimal` |
 | SDPA runtime branch coverage | All 68 configurations ran successfully; all 84 optimization calls returned `optimal` |
@@ -151,7 +163,7 @@ The source reference is upstream commit [`78a089032dab4f4eceee6178531f55ba2cbc25
 | Included data | All 11 `.dat` files remain byte-for-byte identical to upstream |
 | Packaging | All 16 Python files compile; dependency imports and `pip check` pass |
 
-The 68 parameter sets combine `N=2, L=1, m=0` or `N=3, L=2, m=0.25` with every `relax` branch. Stochastic models use `n=2,3`; bounded-variance models use `alpha=0,0.7`. Coefficient checks establish agreement for those tested models. They do not imply identical numerical certificates or unique potential coefficients.
+The 68 parameter sets combine `N=2, L=1, m=0` or `N=3, L=2, m=0.25` with every `relax` branch. Stochastic models use `n=2,3`; bounded-variance models use `alpha=0,0.7`. The affine checks cover the original full models. The separate execution comparison above verifies the actual returned MOSEK coefficients for the 15 measured setups.
 
 Validation code, raw measurements, reference copies, and tools are kept locally in `.validation/`, excluded from Git and GitHub. The public repository contains the direct implementations and this record of the verification scope and measured results.
 

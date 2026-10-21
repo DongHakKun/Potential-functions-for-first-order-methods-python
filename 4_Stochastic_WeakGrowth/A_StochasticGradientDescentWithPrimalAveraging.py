@@ -4,7 +4,7 @@ import cvxpy as cp
 import matplotlib.pyplot as plt
 import numpy as np
 
-from saveData import saveData
+from saveData import saveData, solve
 
 # This code simply checks feasibility of Theorem 14 for primal averaging.
 
@@ -180,7 +180,7 @@ elif solver == 'SDPA':
 elif solver == 'MOSEK':
     solver_opt['mosek_params'] = {'MSK_DPAR_INTPNT_CO_TOL_PFEAS': tolerance}
 solverDetails = cp.Problem(cp.Minimize(obj), cons)
-solverDetails.solve(**solver_opt)
+solve(solverDetails, **solver_opt)
 print('Solver status:', solverDetails.status, 'objective:', solverDetails.value)
 
 # Try to grasp what happens by plotting !

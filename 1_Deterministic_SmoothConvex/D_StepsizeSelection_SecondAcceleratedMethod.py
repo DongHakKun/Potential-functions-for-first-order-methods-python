@@ -5,7 +5,7 @@ import cvxpy as cp
 import matplotlib.pyplot as plt
 import numpy as np
 
-from saveData import saveData
+from saveData import saveData, solve
 
 t_start = perf_counter()
 # SOLVER OPTIONS
@@ -182,7 +182,7 @@ elif solver == "SDPA":
 elif solver == "MOSEK":
     solver_opt["mosek_params"] = {"MSK_DPAR_INTPNT_CO_TOL_PFEAS": tolerance}
 problem = cp.Problem(cp.Minimize(-obj), cons)
-solverDetails = problem.solve(**solver_opt)
+solverDetails = solve(problem, **solver_opt)
 if problem.status not in (cp.OPTIMAL, cp.OPTIMAL_INACCURATE):
     raise RuntimeError(f"The SDP returned {problem.status}; no solution can be plotted or saved.")
 print(f"status={problem.status}, objective={obj.value:.10g}")

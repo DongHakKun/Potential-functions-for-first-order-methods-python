@@ -2,7 +2,7 @@ from pathlib import Path
 import numpy as np
 import cvxpy as cp
 import matplotlib.pyplot as plt
-from saveData import saveData
+from saveData import saveData, solve
 import time
 
 tic = time.perf_counter()
@@ -208,7 +208,7 @@ elif solver == "SDPA":
 elif solver == "MOSEK":
     solver_opt["mosek_params"] = {"MSK_DPAR_INTPNT_CO_TOL_PFEAS": tolerance}
 solverDetails = cp.Problem(cp.Minimize(obj), cons)
-solverDetails.solve(**solver_opt)
+solve(solverDetails, **solver_opt)
 if reoptimize:
     cons = cons + [tau >= -float(obj.value) - tol_reopt]
     solver_opt = {"solver": solver, "verbose": bool(verbose)}
@@ -216,7 +216,7 @@ if reoptimize:
         solver_opt.update(epsilonStar=tolerance, epsilonDash=tolerance,
                           mpfPrecision=200, omegaStar=1e12, numThreads=1)
     solverDetails = cp.Problem(cp.Minimize(accumulated_ek), cons)
-    solverDetails.solve(**solver_opt)
+    solve(solverDetails, **solver_opt)
 
 print(time.perf_counter() - tic)
 
