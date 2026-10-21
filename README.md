@@ -14,17 +14,17 @@ python -m pip install -r requirements.txt
 python 1_Deterministic_SmoothConvex/A_GradientDescent.py
 ```
 
-`requirements.txt` pins the verified versions of NumPy, CVXPY, Matplotlib, MOSEK, and CLARABEL. It lists this project's dependencies rather than exporting the existing conda environment. PyTorch is not used or required. pip installs transitive dependencies as needed.
+`requirements.txt` pins the verified versions of NumPy, CVXPY, Matplotlib, MOSEK, and CLARABEL.
 
-The default solver is **MOSEK**, matching the original scripts. Installing its Python package does not supply a license: configure a valid [MOSEK license](https://docs.mosek.com/latest/pythonapi/install-interface.html) on the machine that runs the optimization. No solver license files are included in this repository.
+The default solver is **MOSEK**, as in the original scripts, and requires a [license](https://docs.mosek.com/latest/pythonapi/install-interface.html).
 
-To use the free solver CLARABEL, change the setting at the top of the experiment:
+To use the free solver CLARABEL, change the setting at the top of the script:
 
 ```python
 solver = "CLARABEL"
 ```
 
-Some degenerate SDPs can produce accuracy warnings or numerical errors with CLARABEL. The scripts retain the original MOSEK default and LMI formulation; select an alternative solver explicitly using the setting above.
+CLARABEL can encounter numerical difficulties with some degenerate SDPs.
 
 Edit `L`, `m`, `N`, `delta`, `relax`, the initial and final potentials, `pplot`, and `ssave` in each script, as applicable. Data is saved in the `SaveData/` directory beside the script. Change `nname` to preserve an existing result; saving to the same path overwrites that file.
 
@@ -80,7 +80,7 @@ The original `.m` model construction, before the solver call, was executed using
 
 The two base parameter sets were `N=2, L=1, m=0` and `N=3, L=2, m=0.25`. Stochastic models used `n=2,3`, and bounded-variance models used `alpha=0,0.7`, respectively.
 
-These results establish agreement of the model construction for the checked configurations. They do not establish complete numerical reproduction of every experiment, plot, or output file under MATLAB and MOSEK. The MOSEK SDK was installed, but numerical execution with MOSEK could not be verified without a valid license. Individual potential coefficients may differ when the optimum is nonunique or the solver and tolerances differ.
+The checks confirm model agreement for the tested configurations. End-to-end numerical reproduction under MATLAB/MOSEK has not been tested. Individual potential coefficients can vary with nonunique optima or different solver tolerances.
 
 The included `.dat` files are upstream reference outputs, not results recomputed in Python. For variance-at-optimum with `N=5, L=1, m=0, n=2, relax=3, dN=4.5`, a separate lower-bound argument from the upstream constraints and a matching rational feasible solution establish an optimum of `20.25`. The upstream saved value of approximately `20.05` cannot be used as an exact feasible certificate for that configuration. Its full historical generation settings and solver logs are unavailable, so the cause of the discrepancy has not been determined.
 
