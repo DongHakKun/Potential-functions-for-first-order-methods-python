@@ -1,0 +1,10 @@
+# Versions verified with Python 3.12.13 in the existing py312 environment.
+numpy==2.4.4
+cvxpy==1.9.3
+matplotlib==3.11.1
+
+# Original default solver; installation does not include a MOSEK license.
+Mosek==11.2.6
+
+# Free SDP solver selected by changing solver = "CLARABEL" in a script.
+clarabel==0.11.1

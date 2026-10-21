@@ -1,0 +1,13 @@
+# Local validation sources, reports, caches, and downloaded tools.
+/.validation/
+
+# Python-generated files and local environments.
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+
+# Local credentials and solver licenses.
+.env
+.env.*
+*.lic
