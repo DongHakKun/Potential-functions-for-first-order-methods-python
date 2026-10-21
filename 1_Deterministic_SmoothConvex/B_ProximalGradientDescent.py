@@ -201,13 +201,39 @@ if solver == "CLARABEL":
                       tol_gap_rel=tolerance, max_iter=500)
 elif solver == "SCS":
     solver_opt.update(eps=tolerance, max_iters=200000)
+elif solver == "SDPA":
+    solver_opt.update(epsilonStar=tolerance, epsilonDash=tolerance,
+                      mpfPrecision=200, omegaStar=1e12, numThreads=1)
 elif solver == "MOSEK":
     solver_opt["mosek_params"] = {"MSK_DPAR_INTPNT_CO_TOL_PFEAS": tolerance}
-problem = cp.Problem(cp.Minimize(-obj), cons)
+
+# Equivalent solver representation for CLARABEL and SDPA; retain the original cons above.
+# Adding a linear function to f and subtracting it from h gives the direction
+# v below. Total gradients and smooth gradient differences do not change, so
+# v.T @ M @ v == 0 identically for every original LMI M. Since M <= 0, M @ v
+# must vanish. Removing the f'(x*) coordinate leaves a basis together with v;
+# the retained principal block and this equality are therefore equivalent to M <= 0.
+solver_cons = cons
+if solver in ("CLARABEL", "SDPA"):
+    solver_cons = [con for con in cons if not isinstance(con, cp.constraints.psd.PSD)]
+    v = np.array([0., 1., 1., 1., -1., -1.])
+    # For m=0, constant ak=L**2 also gives M[0,0] == 0. Check the editable
+    # endpoints before using this additional zero row.
+    zero_x_row = m == 0 and relax == 2 and a0 == L**2 and aN == L**2
+    principal = [1, 2, 4, 5] if zero_x_row else [0, 1, 2, 4, 5]
+    for k in range(1, N+1):
+        solver_cons.append(cons_SDP[k] @ v == 0)
+        if zero_x_row:
+            solver_cons.append(cons_SDP[k][0, :] == 0)
+        solver_cons.append(cons_SDP[k][np.ix_(principal, principal)] << 0)
+problem = cp.Problem(cp.Minimize(-obj), solver_cons)
 solverDetails = problem.solve(**solver_opt)
 if problem.status not in (cp.OPTIMAL, cp.OPTIMAL_INACCURATE):
     raise RuntimeError(f"The SDP returned {problem.status}; no solution can be plotted or saved.")
 print(f"status={problem.status}, objective={obj.value:.10g}")
+if solver_cons is not cons:
+    max_original_constraint_violation = max(float(np.max(con.violation())) for con in cons)
+    print(f"max_original_constraint_violation={max_original_constraint_violation:.3g}")
 
 # Try to grasp what happens by plotting !
 if pplot:

@@ -277,9 +277,46 @@ if solver == 'CLARABEL':
     solver_opt.update(tol_gap_abs=tolerance, tol_gap_rel=tolerance, tol_feas=tolerance)
 elif solver == 'SCS':
     solver_opt.update(eps=tolerance)
+elif solver == 'SDPA':
+    solver_opt.update(epsilonStar=tolerance, epsilonDash=tolerance,
+                      mpfPrecision=200, omegaStar=1e12, numThreads=1)
 elif solver == 'MOSEK':
     solver_opt['mosek_params'] = {'MSK_DPAR_INTPNT_CO_TOL_PFEAS': tolerance}
-solverDetails = cp.Problem(cp.Minimize(obj), cons)
+
+solver_cons = list(cons)
+if (solver in ('CLARABEL', 'SDPA') and m == 0
+        and all(not isinstance(Q[j][0], cp.Expression) and Q[j][0] == 0
+                for j in (1, N+1))):
+    # The original LMIs force Q1=0 and equal first two rows of S at m=0.
+    # Zero diagonal entries of an NSD matrix force their entire rows to zero.
+    # Use that equivalent face for solving; retain cons and all variables.
+    solver_pos = np.r_[0, 2:3+n]
+    solver_keep = np.r_[1, 3+n:dimG]
+    if (all(not isinstance(a[j], cp.Expression) for j in range(1, N+2))
+            and all(a[j] == a[1] for j in range(1, N+2))):
+        solver_pos = np.arange(3+n)
+        solver_keep = np.arange(3+n, dimG)
+    solver_steps = {S[k].id: k for k in S}
+    solver_cons = []
+    for solver_constraint in cons:
+        if not isinstance(solver_constraint, cp.constraints.psd.PSD):
+            solver_cons.append(solver_constraint)
+            continue
+        solver_k = next(solver_steps[v.id] for v in solver_constraint.variables()
+                        if v.id in solver_steps)
+        if solver_constraint.shape == (3, 3):
+            solver_S = S[solver_k]
+            solver_cons.extend([
+                solver_S[0, 1] == solver_S[0, 0],
+                solver_S[1, 1] == solver_S[0, 0],
+                solver_S[1, 2] == solver_S[0, 2],
+                solver_S[np.ix_([0, 2], [0, 2])] >> 0,
+            ])
+        else:
+            solver_M = cons_SDP[solver_k]
+            solver_cons.extend([solver_M[solver_pos, :] == 0,
+                                solver_M[np.ix_(solver_keep, solver_keep)] << 0])
+solverDetails = cp.Problem(cp.Minimize(obj), solver_cons)
 solverDetails.solve(**solver_opt)
 print('Solver status:', solverDetails.status, 'objective:', solverDetails.value)
 

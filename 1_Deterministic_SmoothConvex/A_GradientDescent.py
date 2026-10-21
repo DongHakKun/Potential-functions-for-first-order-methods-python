@@ -168,6 +168,9 @@ if solver == "CLARABEL":
                       tol_gap_rel=tolerance, max_iter=500)
 elif solver == "SCS":
     solver_opt.update(eps=tolerance, max_iters=200000)
+elif solver == "SDPA":
+    solver_opt.update(epsilonStar=tolerance, epsilonDash=tolerance,
+                      mpfPrecision=200, omegaStar=1e12, numThreads=1)
 elif solver == "MOSEK":
     solver_opt["mosek_params"] = {"MSK_DPAR_INTPNT_CO_TOL_PFEAS": tolerance}
 problem = cp.Problem(cp.Minimize(-obj), cons)

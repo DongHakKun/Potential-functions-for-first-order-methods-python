@@ -181,13 +181,43 @@ if solver == "CLARABEL":
                       tol_gap_rel=tolerance, max_iter=500)
 elif solver == "SCS":
     solver_opt.update(eps=tolerance, max_iters=200000)
+elif solver == "SDPA":
+    solver_opt.update(epsilonStar=tolerance, epsilonDash=tolerance,
+                      mpfPrecision=200, omegaStar=1e12, numThreads=1)
 elif solver == "MOSEK":
     solver_opt["mosek_params"] = {"MSK_DPAR_INTPNT_CO_TOL_PFEAS": tolerance}
-problem = cp.Problem(cp.Minimize(-obj), cons)
+
+# Equivalent solver representation for CLARABEL and SDPA; retain the original cons above.
+# At m=0, the x_k and x_next diagonals of M_k are -Q11_k and Q11_next.
+# Adjacent LMIs and zero endpoint Q11 force every Q11 to vanish. The y diagonal
+# is (1,-1,0).T @ S @ (1,-1,0), which is nonnegative since S >= 0 and must also
+# be nonpositive since M <= 0. Thus the first two rows of S coincide. Its [0,2]
+# principal block is PSD iff the full S is PSD under these equalities. The x,
+# x_next, y rows of M then vanish; z also vanishes when every ak is the same.
+solver_cons = cons
+# relax1/2 set both Q11 endpoints to zero above; relax0 retains editable Q0/QN.
+zero_Q11_endpoints = relax in (1, 2) or (
+    relax == 0 and not isinstance(Q0, cp.Expression) and not isinstance(QN, cp.Expression)
+    and Q0[0, 0] == 0 and QN[0, 0] == 0)
+if solver in ("CLARABEL", "SDPA") and m == 0 and zero_Q11_endpoints:
+    solver_cons = [con for con in cons if not isinstance(con, cp.constraints.psd.PSD)]
+    fixed_a = relax in (1, 2) and all(
+        not isinstance(a[k], cp.Expression) and a[k] == L/2 for k in range(1, N+2))
+    positions = [0, 1, 2, 3] if fixed_a else [1, 2, 3]
+    principal = [4, 5, 6] if fixed_a else [0, 4, 5, 6]
+    for k in range(1, N+1):
+        solver_cons.extend([S[k][0, 1] == S[k][0, 0], S[k][1, 1] == S[k][0, 0],
+                            S[k][1, 2] == S[k][0, 2], S[k][np.ix_([0, 2], [0, 2])] >> 0,
+                            cons_SDP[k][positions, :] == 0,
+                            cons_SDP[k][np.ix_(principal, principal)] << 0])
+problem = cp.Problem(cp.Minimize(-obj), solver_cons)
 solverDetails = problem.solve(**solver_opt)
 if problem.status not in (cp.OPTIMAL, cp.OPTIMAL_INACCURATE):
     raise RuntimeError(f"The SDP returned {problem.status}; no solution can be plotted or saved.")
 print(f"status={problem.status}, objective={obj.value:.10g}")
+if solver_cons is not cons:
+    max_original_constraint_violation = max(float(np.max(con.violation())) for con in cons)
+    print(f"max_original_constraint_violation={max_original_constraint_violation:.3g}")
 print(f"Elapsed time: {perf_counter()-t_start:.3f} seconds")
 
 # Try to grasp what happens by plotting !

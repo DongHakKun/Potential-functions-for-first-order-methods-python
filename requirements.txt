@@ -3,8 +3,9 @@ numpy==2.4.4
 cvxpy==1.9.3
 matplotlib==3.11.1
 
-# Original default solver; installation does not include a MOSEK license.
+# Solver used by the MATLAB original.
 Mosek==11.2.6
 
-# Free SDP solver selected by changing solver = "CLARABEL" in a script.
+# Free SDP solvers: fast double precision and 200-bit multiprecision.
 clarabel==0.11.1
+sdpa-multiprecision==0.2.3

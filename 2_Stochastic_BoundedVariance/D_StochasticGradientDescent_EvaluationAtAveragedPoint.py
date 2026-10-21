@@ -194,6 +194,9 @@ if solver == "CLARABEL":
     solver_opt.update(tol_gap_abs=tolerance, tol_gap_rel=tolerance, tol_feas=tolerance)
 elif solver == "SCS":
     solver_opt.update(eps=tolerance)
+elif solver == "SDPA":
+    solver_opt.update(epsilonStar=tolerance, epsilonDash=tolerance,
+                      mpfPrecision=200, omegaStar=1e12, numThreads=1)
 elif solver == "MOSEK":
     solver_opt["mosek_params"] = {"MSK_DPAR_INTPNT_CO_TOL_PFEAS": tolerance}
 solverDetails = cp.Problem(cp.Minimize(obj), cons)
@@ -201,6 +204,9 @@ solverDetails.solve(**solver_opt)
 if reoptimize:
     cons = cons + [tau >= -float(obj.value) - tol_reopt]
     solver_opt = {"solver": solver, "verbose": bool(verbose)}
+    if solver == "SDPA":
+        solver_opt.update(epsilonStar=tolerance, epsilonDash=tolerance,
+                          mpfPrecision=200, omegaStar=1e12, numThreads=1)
     solverDetails = cp.Problem(cp.Minimize(accumulated_ek), cons)
     solverDetails.solve(**solver_opt)
 
