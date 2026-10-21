@@ -2,6 +2,8 @@
 
 This repository is a file-by-file Python translation of the [original MATLAB code](https://github.com/AdrienTaylor/Potential-functions-for-first-order-methods) by Adrien Taylor and Francis Bach. It uses NumPy and CVXPY to formulate the semidefinite programs for finding potential functions, and Matplotlib to plot the results.
 
+**Status: incomplete numerical reproduction.** Of the 11 CLARABEL runs reported below, four returned `optimal`, six returned `optimal_inaccurate`, and one failed. The model translation is implemented, but reliable numerical reproduction of every experiment remains unfinished.
+
 **MOSEK could not be used in the validation environment, so numerical experiments were run with the free solver CLARABEL.** The tables below show the measured results and their differences from the original repository's saved `.dat` outputs.
 
 The translation follows the original directories, filenames, settings sections, variable names, calculation order, linear matrix inequalities (LMIs), plots, and data format. Each experiment contains its implementation directly, from setup through optimization and saving. Edit the settings at the top of a script and run it.
@@ -132,6 +134,7 @@ The original `.m` model construction, before the solver call, was executed using
 | Pre-publication checks | All 16 Python files compile; dependency imports and `pip check` pass |
 | Pre-publication numerical check | GD with `N=2` and CLARABEL: `optimal`, objective `8.9999999807`; figure creation and `(3, 5)` data output verified |
 | Native MATLAB check | MATLAB R2026b executed; MOSEK 11.2.6 returned error `1008` (`MSK_RES_ERR_MISSING_LICENSE_FILE`) and produced no solution |
+| Failed-model audit | Variance-at-optimum at `N=5` and `N=10`: all original cone coefficients match exactly; rational feasible witnesses satisfy the full constraints. This is not a successful numerical solve. |
 
 The two base parameter sets were `N=2, L=1, m=0` and `N=3, L=2, m=0.25`. Stochastic models used `n=2,3`, and bounded-variance models used `alpha=0,0.7`, respectively.
 
