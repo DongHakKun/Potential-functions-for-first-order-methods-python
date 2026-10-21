@@ -2,6 +2,8 @@
 
 This repository is a file-by-file Python translation of the [original MATLAB code](https://github.com/AdrienTaylor/Potential-functions-for-first-order-methods) by Adrien Taylor and Francis Bach. It uses NumPy and CVXPY to formulate the semidefinite programs for finding potential functions, and Matplotlib to plot the results.
 
+**MOSEK could not be used in the validation environment, so numerical experiments were run with the free solver CLARABEL.** The tables below show the measured results and their differences from the original repository's saved `.dat` outputs.
+
 The translation follows the original directories, filenames, settings sections, variable names, calculation order, linear matrix inequalities (LMIs), plots, and data format. Each experiment contains its implementation directly, from setup through optimization and saving. Edit the settings at the top of a script and run it.
 
 ## Installation and usage
@@ -13,7 +15,7 @@ conda activate py312
 python -m pip install -r requirements.txt
 ```
 
-`requirements.txt` pins NumPy, CVXPY, Matplotlib, CLARABEL, and the upstream MOSEK dependency. The scripts preserve the original `solver = "MOSEK"` setting. **The numerical results reported for this port were obtained with CLARABEL.** To reproduce those runs, change the setting at the top of the script:
+`requirements.txt` contains this project's libraries and solver interfaces. The scripts retain the upstream MOSEK default. For the CLARABEL runs documented here, set the solver at the top of the script:
 
 ```python
 solver = "CLARABEL"
@@ -27,29 +29,58 @@ python 1_Deterministic_SmoothConvex/A_GradientDescent.py
 
 Edit `L`, `m`, `N`, `delta`, `relax`, the initial and final potentials, `pplot`, and `ssave` in each script, as applicable. Data is saved in the `SaveData/` directory beside the script. Change `nname` to preserve an existing result; saving to the same path overwrites that file.
 
-## CLARABEL measurements
+## Results compared with the original repository
 
-Measured runs of the standalone Python scripts with CLARABEL 0.11.1 and CVXPY 1.9.3. Parameters: `L=1`, `m=0`, stochastic `n=2`, bounded-variance `alpha=0`, and weak-growth `rho=2`. The table lists `N` and `relax`; these settings can differ from script defaults. Plotting and saving were disabled, and numerical-library threads were limited to one.
+The reference values link to the original repository's saved `.dat` outputs. The CLARABEL values are new runs of the Python scripts; the reference column is not a new MOSEK measurement.
 
-| Experiment | N | relax | Measured quantity / final objective | Status | Max raw constraint violation | Solver time (s) |
-| --- | ---: | ---: | --- | --- | ---: | ---: |
-| 1/A — Gradient descent | 100 | 0 | `bk_N = 10200.9860918` | `optimal` | `1.761e-08` | 0.022558 |
-| 1/B — Proximal gradient | 100 | 0 | `bk_N = 9963.04800805` | `optimal_inaccurate` | `6.893e-05` | 0.134143 |
-| 1/C — First accelerated method | 100 | 2 | `dk_N = 4086.68445478` | `optimal_inaccurate` | `3.787e-05` | 0.219248 |
-| 1/D — Second accelerated method | 100 | 0 | `dk_N = 5270.39193485` | `optimal` | `5.352e-09` | 0.068079 |
-| 2/A — SGD | 100 | 0 | `tau = 200.99997971`; `sum_e = 2060.4544691` | `optimal` | `2.039e-08` | 0.164970 |
-| 2/B — SGD with averaging | 100 | 0 | `tau = 101.999928675`; `sum_e = 48.6614291052` | `optimal_inaccurate` | `4.483e-05` | 0.281515 |
-| 2/C — SGD with primal averaging | 100 | 0 | `sum_e = 49.5004087844` | `optimal_inaccurate` | `7.363e-07` | 0.040916 |
-| 2/D — Evaluation at averaged point | 100 | 0 | `tau = 99.9973689444`; `sum_e = 49.4987257886` | `optimal_inaccurate` | `3.834e-07` | 0.076993 |
-| 3/A — Overparametrized | 100 | 3 | `dk_N = 100.179225929` | `optimal_inaccurate` | `1.029e-05` | 0.572055 |
-| 4/A — Weak growth, primal averaging | 100 | 1 | `objective = 0` (feasibility) | `optimal` | `1.597e-10` | 0.037386 |
-| 5/A — Variance at optimum | 5 | 3 | — | `NumericalError` | — | 0.031384 |
+Runs used Python 3.12.13, CVXPY 1.9.3, CLARABEL 0.11.1, `L=1`, `m=0`, stochastic `n=2`, bounded-variance `alpha=0`, and weak-growth `rho=2`. `N` and `relax` are listed for each experiment. Plotting and saving were disabled, with numerical-library threads limited to one. Some settings override script defaults to follow the saved coefficient patterns.
 
-Solver time is the solver-reported solve time, excluding compilation. For the two-stage experiments 2/A, 2/B, and 2/D, it is the sum of both stages; the reported quantities, status, and constraint violation are from the final stage.
+Absolute difference is `|CLARABEL - saved|`; signed difference is `100 * (CLARABEL - saved) / |saved|`. Differences are calculated before rounding the displayed values.
 
-Constraint violation is the maximum violation of the original raw constraints at the returned solution. The failed 5/A run returned no primal solution; its unavailable values are marked —.
+| Experiment (N, relax) | Quantity | Upstream saved | CLARABEL | Absolute difference | Signed difference % | Status |
+|---|---|---:|---:|---:|---:|---|
+| Gradient descent (100, 0) | τ (= final b_N) | [10201](1_Deterministic_SmoothConvex/SaveData/GradientD.dat) | 10200.986092 | 0.01390823 | -0.0001363418% | optimal |
+| Proximal gradient descent (100, 0) | τ (= final b_N) | [9999.9](1_Deterministic_SmoothConvex/SaveData/ProxGradientD.dat) | 9963.048008 | 36.85199 | -0.3685236% | optimal_inaccurate |
+| First accelerated method (100, 2) | τ (= final d_N) | [4089.5](1_Deterministic_SmoothConvex/SaveData/FastGradientD1.dat) | 4086.6844548 | 2.815545 | -0.06884815% | optimal_inaccurate |
+| Second accelerated method (100, 0) | τ (= final d_N) | [5270.4](1_Deterministic_SmoothConvex/SaveData/FastGradientD2.dat) | 5270.3919349 | 0.008065149 | -0.0001530273% | optimal |
+| Bounded-variance SGD (100, 0) | Final τ after stage 2 | [201](2_Stochastic_BoundedVariance/SaveData/SGD.dat) | 200.99997971 | 2.028976e-05 | -1.009441e-05% | optimal |
+| Bounded-variance SGD (100, 0) | Σ e_k | [2057.5](2_Stochastic_BoundedVariance/SaveData/SGD.dat) | 2060.4544691 | 2.954469 | +0.1435951% | optimal |
+| SGD with averaging (100, 0) | Final τ after stage 2 | [102](2_Stochastic_BoundedVariance/SaveData/SGD_Averaging.dat) | 101.99992868 | 7.132486e-05 | -6.992633e-05% | optimal_inaccurate |
+| SGD with averaging (100, 0) | Σ e_k | [48.676](2_Stochastic_BoundedVariance/SaveData/SGD_Averaging.dat) | 48.661429105 | 0.01457089 | -0.02993445% | optimal_inaccurate |
+| SGD with primal averaging (100, 0) | Σ e_k | [49.5](2_Stochastic_BoundedVariance/SaveData/SGD_Primal_Averaging.dat) | 49.500408784 | 0.0004087844 | +0.000825827% | optimal_inaccurate |
+| SGD at averaged point (100, 0) | Final τ after stage 2 | [100](2_Stochastic_BoundedVariance/SaveData/SGD_Evaluation_AtAveragedPoint.dat) | 99.997368944 | 0.002631056 | -0.002631056% | optimal_inaccurate |
+| SGD at averaged point (100, 0) | Σ e_k | [49.5](2_Stochastic_BoundedVariance/SaveData/SGD_Evaluation_AtAveragedPoint.dat) | 49.498725789 | 0.001274211 | -0.002574165% | optimal_inaccurate |
+| Overparametrized SGD (100, 3) [a] | τ (= final d_N) | [100.16](3_Stochastic_Overparametrized/SaveData/ParameterSelection.dat) | 100.17922593 | 0.01922593 | +0.01919522% | optimal_inaccurate |
+| Weak-growth primal averaging (100, 1) | Σ e_k (certificate) [b] | [3.1255](4_Stochastic_WeakGrowth/SaveData/SGD_Primal_Averaging.dat) | 3.1250295307 | 0.0004704693 | -0.01505261% | optimal |
+| Variance at optimum (5, 3) | Σ e_k | [20.05](5_Stochastic_VarianceAtOptimum/SaveData/ParameterSelection.dat) | — | — | — | failed (NumericalError) |
 
-These are CLARABEL measurements only. Upstream saved `.dat` values are not presented as a new MOSEK benchmark.
+For two-stage SGD experiments, both the final `tau` and the minimized noise coefficient `sum(e)` are shown. Each run follows the original reoptimization procedure with `tol_reopt=1e-5`.
+
+[a] The overparametrized `relax=3` setting is inferred from the saved coefficients; `relax=1` cannot be excluded. Full historical settings are unavailable, so this row is a comparison for the stated configuration.
+
+[b] Weak growth solves a feasibility problem with objective zero. Its `sum(e)` is a certificate coefficient, not an optimized objective.
+
+The saved files use five significant digits. The GD and second accelerated-method differences are below the reference values' rounding resolution. Differences from historical outputs can include rounding and configuration differences as well as numerical effects; they do not isolate solver error.
+
+### CLARABEL constraint residuals and timing
+
+| Experiment | Max raw constraint violation | Solver time (s) |
+| --- | ---: | ---: |
+| 1/A — Gradient descent | `1.761e-08` | 0.022558 |
+| 1/B — Proximal gradient | `6.893e-05` | 0.134143 |
+| 1/C — First accelerated method | `3.787e-05` | 0.219248 |
+| 1/D — Second accelerated method | `5.352e-09` | 0.068079 |
+| 2/A — SGD | `2.039e-08` | 0.164970 |
+| 2/B — SGD with averaging | `4.483e-05` | 0.281515 |
+| 2/C — SGD with primal averaging | `7.363e-07` | 0.040916 |
+| 2/D — Evaluation at averaged point | `3.834e-07` | 0.076993 |
+| 3/A — Overparametrized | `1.029e-05` | 0.572055 |
+| 4/A — Weak growth, primal averaging | `1.597e-10` | 0.037386 |
+| 5/A — Variance at optimum | — | 0.031384 |
+
+Times exclude compilation and plotting, and sum both solves for two-stage experiments. Constraint violations are measured on the original raw constraints at the final returned solution. The failed variance-at-optimum run returned no solution, so its output and difference are left blank above.
+
+`optimal_inaccurate` results should be read with their residuals: for example, SGD with averaging returned a lower `sum(e)` than the saved value but violated an original constraint by `4.48e-5`; the lower value is not evidence of improved accuracy.
 
 ## Repository layout
 
@@ -104,7 +135,7 @@ The original `.m` model construction, before the solver call, was executed using
 
 The two base parameter sets were `N=2, L=1, m=0` and `N=3, L=2, m=0.25`. Stochastic models used `n=2,3`, and bounded-variance models used `alpha=0,0.7`, respectively.
 
-The checks confirm model agreement for the tested configurations. **No successful MATLAB/MOSEK numerical run is reported here.** Individual potential coefficients can vary with nonunique optima or different solver tolerances.
+These coefficient checks establish model agreement for the tested configurations; they do not measure numerical differences between solvers. Individual potential coefficients can vary with nonunique optima or different solver tolerances.
 
 The included `.dat` files are upstream reference outputs, not results recomputed in Python. For variance-at-optimum with `N=5, L=1, m=0, n=2, relax=3, dN=4.5`, a separate lower-bound argument from the upstream constraints and a matching rational feasible solution establish an optimum of `20.25`. The upstream saved value of approximately `20.05` cannot be used as an exact feasible certificate for that configuration. Its full historical generation settings and solver logs are unavailable, so the cause of the discrepancy has not been determined.
 
