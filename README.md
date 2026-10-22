@@ -176,16 +176,16 @@ The 16 original MATLAB files correspond to 16 Python files: 11 experiments and f
 | ID | Directory | Experiment | Paper reference |
 | --- | --- | --- | --- |
 | `1/A` | `1_Deterministic_SmoothConvex` | [A_GradientDescent.py](1_Deterministic_SmoothConvex/A_GradientDescent.py) | Section 3.2.1, Theorem 3, Figure 1 |
-| `1/B` | Same directory | [B_ProximalGradientDescent.py](1_Deterministic_SmoothConvex/B_ProximalGradientDescent.py) | Appendix C.2, Theorem 9 |
-| `1/C` | Same directory | [C_StepsizeSelection_FirstAcceleratedMethod.py](1_Deterministic_SmoothConvex/C_StepsizeSelection_FirstAcceleratedMethod.py) | Appendix C.3, Theorem 10, Figure 3 |
-| `1/D` | Same directory | [D_StepsizeSelection_SecondAcceleratedMethod.py](1_Deterministic_SmoothConvex/D_StepsizeSelection_SecondAcceleratedMethod.py) | Appendix C.3, Theorem 11, Figure 4 |
+| `1/B` | Same directory | [B_ProximalGradientDescent.py](1_Deterministic_SmoothConvex/B_ProximalGradientDescent.py) | Appendix D.2, Theorem 9 |
+| `1/C` | Same directory | [C_StepsizeSelection_FirstAcceleratedMethod.py](1_Deterministic_SmoothConvex/C_StepsizeSelection_FirstAcceleratedMethod.py) | Appendix D.3, Theorem 10, Figure 3 |
+| `1/D` | Same directory | [D_StepsizeSelection_SecondAcceleratedMethod.py](1_Deterministic_SmoothConvex/D_StepsizeSelection_SecondAcceleratedMethod.py) | Appendix D.3, Theorem 11, Figure 4 |
 | `2/A` | `2_Stochastic_BoundedVariance` | [A_StochasticGradientDescent.py](2_Stochastic_BoundedVariance/A_StochasticGradientDescent.py) | Section 3.2.2, Theorem 5, Figure 2 |
 | `2/B` | Same directory | [B_StochasticGradientDescentWithAveraging.py](2_Stochastic_BoundedVariance/B_StochasticGradientDescentWithAveraging.py) | Section 3.2.2, Theorem 6 |
 | `2/C` | Same directory | [C_StochasticGradientDescentWithPrimalAveraging.py](2_Stochastic_BoundedVariance/C_StochasticGradientDescentWithPrimalAveraging.py) | Section 3.2.2, Theorem 7 |
-| `2/D` | Same directory | [D_StochasticGradientDescent_EvaluationAtAveragedPoint.py](2_Stochastic_BoundedVariance/D_StochasticGradientDescent_EvaluationAtAveragedPoint.py) | Appendix D.4, Theorem 12 |
-| `3/A` | `3_Stochastic_Overparametrized` | [A_ParameterSelection.py](3_Stochastic_Overparametrized/A_ParameterSelection.py) | Section 4, Appendix E, Theorem 8, Figure 5 |
-| `4/A` | `4_Stochastic_WeakGrowth` | [A_StochasticGradientDescentWithPrimalAveraging.py](4_Stochastic_WeakGrowth/A_StochasticGradientDescentWithPrimalAveraging.py) | Appendix F |
-| `5/A` | `5_Stochastic_VarianceAtOptimum` | [A_ParameterSelection.py](5_Stochastic_VarianceAtOptimum/A_ParameterSelection.py) | Appendix G |
+| `2/D` | Same directory | [D_StochasticGradientDescent_EvaluationAtAveragedPoint.py](2_Stochastic_BoundedVariance/D_StochasticGradientDescent_EvaluationAtAveragedPoint.py) | Appendix E.4, Theorem 12 |
+| `3/A` | `3_Stochastic_Overparametrized` | [A_ParameterSelection.py](3_Stochastic_Overparametrized/A_ParameterSelection.py) | Section 4, Appendix F.2, Theorem 8, Figure 5 |
+| `4/A` | `4_Stochastic_WeakGrowth` | [A_StochasticGradientDescentWithPrimalAveraging.py](4_Stochastic_WeakGrowth/A_StochasticGradientDescentWithPrimalAveraging.py) | Appendix G |
+| `5/A` | `5_Stochastic_VarianceAtOptimum` | [A_ParameterSelection.py](5_Stochastic_VarianceAtOptimum/A_ParameterSelection.py) | Appendix H |
 
 Each experiment directory contains `saveData.py` and `SaveData/`.
 
