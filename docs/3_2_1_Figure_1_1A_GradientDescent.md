@@ -21,6 +21,8 @@ Q_k&=\begin{pmatrix}a_k&c_k\\c_k&b_k\end{pmatrix}.
 \end{aligned}
 $$
 
+$Q_k$는 논문 식 (21), p.48의 2×2 potential 계수행렬 표기다. Appendix D.4, p.36은 같은 2×2 행렬을 성분으로 직접 쓴다.
+
 전개하면 $a_k\|x_k-x_\star\|^2+b_k\|f'(x_k)\|^2+2c_k\langle f'(x_k),x_k-x_\star\rangle+d_k(f(x_k)-f_\star)$이다.
 
 | 수식의 기호 | Python 표현 | 의미 |

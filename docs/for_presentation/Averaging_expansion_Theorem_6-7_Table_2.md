@@ -200,19 +200,19 @@ $$
 첫 번째는 $x_\star,x_k$ 사이의 interpolation inequality야.
 
 $$
-\boxed{ I_{\star,x_k} =f_\star-f(x_k) -\langle f'(x_k),x_\star-x_k\rangle -\frac1{2L}\Vert f'(x_k)\Vert ^2 \ge0. }
+\boxed{ f_\star-f(x_k) -\langle f'(x_k),x_\star-x_k\rangle -\frac1{2L}\Vert f'(x_k)\Vert ^2 \ge0. }
 $$
 
 두 번째는 $x_k,z_{k+1}^{(i)}$ 사이의 interpolation이야.
 
 $$
-\boxed{ \begin{aligned} I_{x_k,z_{k+1}^{(i)}} ={}&f(x_k)-f(z_{k+1}^{(i)})\\ &-\langle f'(z_{k+1}^{(i)}),x_k-z_{k+1}^{(i)}\rangle\\ &-\frac1{2L} \Vert f'(x_k)-f'(z_{k+1}^{(i)})\Vert ^2 \ge0. \end{aligned} }
+\boxed{ \begin{aligned} {}&f(x_k)-f(z_{k+1}^{(i)})\\ &-\langle f'(z_{k+1}^{(i)}),x_k-z_{k+1}^{(i)}\rangle\\ &-\frac1{2L} \Vert f'(x_k)-f'(z_{k+1}^{(i)})\Vert ^2 \ge0. \end{aligned} }
 $$
 
 세 번째는 $z_k,z_{k+1}^{(i)}$ 사이의 interpolation이야.
 
 $$
-\boxed{ \begin{aligned} I_{z_k,z_{k+1}^{(i)}} ={}&f(z_k)-f(z_{k+1}^{(i)})\\ &-\langle f'(z_{k+1}^{(i)}),z_k-z_{k+1}^{(i)}\rangle\\ &-\frac1{2L} \Vert f'(z_k)-f'(z_{k+1}^{(i)})\Vert ^2 \ge0. \end{aligned} }
+\boxed{ \begin{aligned} {}&f(z_k)-f(z_{k+1}^{(i)})\\ &-\langle f'(z_{k+1}^{(i)}),z_k-z_{k+1}^{(i)}\rangle\\ &-\frac1{2L} \Vert f'(z_k)-f'(z_{k+1}^{(i)})\Vert ^2 \ge0. \end{aligned} }
 $$
 
 마지막은 bounded variance constraint야.
@@ -237,10 +237,10 @@ $$
 
 앞의 세 multiplier는 각각의 interpolation inequality에, 네 번째는 variance constraint에 적용해.
 
-$I_{p,q}\ge0$ 표기를 유지하면, 모두 0 이하인 항들의 가중합을 다음처럼 쓸 수 있어.
+앞의 interpolation 부등식에 음의 multiplier를 곱하고 variance constraint를 더하면, 모두 0 이하인 항들의 가중합을 다음처럼 쓸 수 있어.
 
 $$
-\begin{aligned} 0\ge{}& -\lambda_1I_{\star,x_k}\\ &-\lambda_2\mathbb E_i I_{x_k,z_{k+1}^{(i)}}\\ &-\lambda_3\mathbb E_i I_{z_k,z_{k+1}^{(i)}}\\ &+e_k\big[ \mathbb E_i\Vert G(x_k;i)-f'(x_k)\Vert ^2-\sigma^2 \big]. \end{aligned}
+\begin{aligned} 0\ge{}& -\lambda_1\left[f_\star-f(x_k)-\langle f'(x_k),x_\star-x_k\rangle-\frac1{2L}\Vert f'(x_k)\Vert^2\right]\\ &-\lambda_2\mathbb E_i \left[f(x_k)-f(z_{k+1}^{(i)})-\langle f'(z_{k+1}^{(i)}),x_k-z_{k+1}^{(i)}\rangle-\frac1{2L}\Vert f'(x_k)-f'(z_{k+1}^{(i)})\Vert^2\right]\\ &-\lambda_3\mathbb E_i \left[f(z_k)-f(z_{k+1}^{(i)})-\langle f'(z_{k+1}^{(i)}),z_k-z_{k+1}^{(i)}\rangle-\frac1{2L}\Vert f'(z_k)-f'(z_{k+1}^{(i)})\Vert^2\right]\\ &+e_k\big[ \mathbb E_i\Vert G(x_k;i)-f'(x_k)\Vert ^2-\sigma^2 \big]. \end{aligned}
 $$
 
 이제 이 가중합이 potential difference와 어떻게 연결되는지 항별로 보자. 먼저 함수값 항은
@@ -294,28 +294,10 @@ $$
 따라서 가중합에서 함수값 차이와 이 거리항 차이를 먼저 묶으면 다음 등식을 얻어.
 
 $$
-\boxed{ \begin{aligned} 0\ge{}& (d_k+1)\delta_kL\, \mathbb E_i[f(z_{k+1}^{(i)})-f_\star]\\ &+\frac L2\mathbb E_i\Vert x_{k+1}^{(i)}-x_\star\Vert ^2\\ &-d_k\delta_kL(f(z_k)-f_\star) -\frac L2\Vert x_k-x_\star\Vert ^2\\ &-e_k\sigma^2+\mathcal R_{6,k}. \end{aligned} }
+\boxed{ \begin{aligned} 0\ge{}& (d_k+1)\delta_kL\, \mathbb E_i[f(z_{k+1}^{(i)})-f_\star]\\ &+\frac L2\mathbb E_i\Vert x_{k+1}^{(i)}-x_\star\Vert ^2\\ &-d_k\delta_kL(f(z_k)-f_\star) -\frac L2\Vert x_k-x_\star\Vert ^2\\ &-e_k\sigma^2\\ &+\frac{\delta_k}{2}\Vert f'(x_k)\Vert^2\\ &+\frac{\delta_k}{2}\mathbb E_i\Vert f'(x_k)-f'(z_{k+1}^{(i)})\Vert^2\\ &+\frac{d_k\delta_k}{2}\mathbb E_i\Vert f'(z_k)-f'(z_{k+1}^{(i)})\Vert^2\\ &+L\delta_k^2\mathbb E_i\langle f'(z_{k+1}^{(i)}),G(x_k;i)\rangle\\ &+\left(e_k-\frac{L\delta_k^2}{2}\right)\mathbb E_i\Vert G(x_k;i)\Vert^2-e_k\Vert f'(x_k)\Vert^2. \end{aligned} }
 $$
 
-여기서 $\mathcal R_{6,k}$는 위의 함수값·거리항 차이와 $-e_k\sigma^2$를 제외한 이차항이야. 아직 완전제곱으로 정리하기 전에는
-
-$$
-\begin{aligned}
-\mathcal R_{6,k}={}&
-\frac{\delta_k}{2}\Vert f'(x_k)\Vert^2
-+\frac{\delta_k}{2}\mathbb E_i
-\Vert f'(x_k)-f'(z_{k+1}^{(i)})\Vert^2\\
-&+\frac{d_k\delta_k}{2}\mathbb E_i
-\Vert f'(z_k)-f'(z_{k+1}^{(i)})\Vert^2\\
-&+L\delta_k^2\mathbb E_i
-\langle f'(z_{k+1}^{(i)}),G(x_k;i)\rangle\\
-&+\left(e_k-\frac{L\delta_k^2}{2}\right)
-\mathbb E_i\Vert G(x_k;i)\Vert^2
--e_k\Vert f'(x_k)\Vert^2
-\end{aligned}
-$$
-
-야. 마지막 줄에는 $\mathbb E_i\Vert G(x_k;i)-f'(x_k)\Vert^2=\mathbb E_i\Vert G(x_k;i)\Vert^2-\Vert f'(x_k)\Vert^2$를 사용했어.
+마지막 줄에는 $\mathbb E_i\Vert G(x_k;i)-f'(x_k)\Vert^2=\mathbb E_i\Vert G(x_k;i)\Vert^2-\Vert f'(x_k)\Vert^2$를 사용했어.
 
 ### 3.3. 남는 이차항이 왜 nonnegative인가?
 
@@ -365,7 +347,7 @@ $$
 가 돼. 따라서 Appendix E.2의 잔차를 다음과 같이 얻어.
 
 $$
-\begin{aligned} \mathcal R_{6,k} ={}&\frac{(d_k+1)\delta_k}{2} \mathbb E_i\left\Vert  f'(z_{k+1}^{(i)}) -\frac{ d_kf'(z_k)+f'(x_k)-L\delta_kG(x_k;i) }{d_k+1} \right\Vert ^2\\[6pt] &+\frac{d_k\delta_k}{2(d_k+1)} \Vert f'(z_k)+(L\delta_k-1)f'(x_k)\Vert ^2\\[6pt] &+\frac{\delta_k}{2} \left[1+L\delta_k(1-L\delta_k)\right] \Vert f'(x_k)\Vert ^2. \end{aligned}
+\begin{aligned} {}&\frac{(d_k+1)\delta_k}{2} \mathbb E_i\left\Vert  f'(z_{k+1}^{(i)}) -\frac{ d_kf'(z_k)+f'(x_k)-L\delta_kG(x_k;i) }{d_k+1} \right\Vert ^2\\[6pt] &+\frac{d_k\delta_k}{2(d_k+1)} \Vert f'(z_k)+(L\delta_k-1)f'(x_k)\Vert ^2\\[6pt] &+\frac{\delta_k}{2} \left[1+L\delta_k(1-L\delta_k)\right] \Vert f'(x_k)\Vert ^2. \end{aligned}
 $$
 
 앞의 두 항은 계수가 비음수이고 norm 제곱이므로 언제나 0 이상이야.
@@ -392,11 +374,7 @@ $$
 
 이면 세 항이 모두 비음수야.
 
-즉,
-
-$$
-\mathcal R_{6,k}\ge0.
-$$
+즉, 위 세 이차항의 합은 0 이상이야.
 
 그러므로 앞의 가중합에서
 
@@ -432,7 +410,7 @@ $$
 
 고정 step-size에서는 $d_{k+1}=d_k+1$로 자연스럽게 연결돼. Step-size가 변할 때에는 averaging weight를 바꾸어 두 계수를 정확히 맞출 수 있어. 감소하는 step-size에서는 산술평균을 유지하면서 다음 함수값의 계수를 낮추어 연결하는 방법도 있어. 먼저 Appendix E.5가 사용하는 첫 번째 구성을 보자.
 
-### 4.1. 누적 계수 $D_k$ 도입
+### 4.1. Appendix E.5의 누적 계수 $D_k$
 
 Appendix E.5, pp.44–45에서는 양의 step-size에 대해 averaging weight를 다음과 같이 선택해.
 
@@ -451,7 +429,7 @@ $$
 
 여기서 $d_{k+1}$은 **다음 전이에서 사용할 averaging weight**야. Theorem 6의 한 단계 식에 있는 $d_k+1$을 모든 step-size에서 그대로 이어 붙이는 것과 구분해야 해. 각 전이에는 정리의 한 단계 부등식을 적용하고, 전이 사이에는 위 recurrence로 계수를 연결하는 것이야.
 
-따라서 누적 함수값 계수를
+논문 Appendix E.5 p.44는 $D_0=0$으로 두고 $k\ge1$에서 $D_k=L\delta_{k-1}(d_{k-1}+1)$로 정의해. 위 recurrence에 의해 같은 계수를
 
 $$
 \boxed{D_k=L\delta_kd_k}
@@ -502,13 +480,13 @@ $$
 Theorem 6의 결과는
 
 $$
-\boxed{ \mathbb E_i\phi_{k+1}^f \le\phi_k^f+e_k^{\mathrm{PR}}\sigma^2 }
+\boxed{ \mathbb E_i\phi_{k+1}^f \le\phi_k^f+e_k\sigma^2 }
 $$
 
 가 돼. 오차 계수도 $1/(d_k+1)=L\delta_k/D_{k+1}$를 대입하면
 
 $$
-\boxed{ e_k^{\mathrm{PR}} =\frac{L\delta_k^2}{2} \left(1+\frac{L^2\delta_k^2}{D_{k+1}}\right). }
+\boxed{ e_k =\frac{L\delta_k^2}{2} \left(1+\frac{L^2\delta_k^2}{D_{k+1}}\right). }
 $$
 
 따라서 전체 단계에 적용하면
@@ -540,12 +518,11 @@ $$
 \mathbb E_i[f(z_{k+1}^{(i)})-f_\star].
 $$
 
-즉, 정리 좌변의 함수값 계수를 낮추어도 부등식은 유지돼. 코드의 함수값 계수 표기를 $d_k^{\mathrm{pot}}$로 구분하면
+즉, 정리 좌변의 함수값 계수를 낮추어도 부등식은 유지돼. 원본 Python 코드의 `d`는 함수값 계수이고, Theorem 6의 $d_k$는 평균 가중치야. 이 문단의 potential을 계수까지 풀어 쓰면
 
 $$
 \boxed{
-d_k^{\mathrm{pot}}=kL\delta_k,\qquad
-\phi_k^f=d_k^{\mathrm{pot}}(f(z_k)-f_\star)
+\phi_k^f=kL\delta_k(f(z_k)-f_\star)
 +\frac L2\Vert x_k-x_\star\Vert^2
 }
 $$
@@ -561,7 +538,7 @@ $$
 
 출처: 논문 Appendix E.5, pp.44–45; `3_2_2_Theorem_6_2B_StochasticGradientDescentWithAveraging.md`, §2 및 §9의 “Theorem 6과 함수값 계수의 대응”.
 
-이제 Theorem 7로 넘어가면, 흥미롭게도 같은 $D_k$ 구조를 사용하면서 **추가 오차 계수 $L^2\delta_k^2/D_{k+1}$**를 제거할 수 있어.
+이제 Theorem 7로 넘어가면, 흥미롭게도 함수값 계수를 $d_{k+1}=d_k+L\delta_k$로 누적하면서 **추가 오차 계수 $L^2\delta_k^2/D_{k+1}$**를 제거할 수 있어.
 
 ## 5. Theorem 7 — SGD with Primal Averaging
 
@@ -574,7 +551,7 @@ Theorem 7은 Theorem 6과 유사한 averaging 구조를 사용하지만, 계산 
 Theorem 6에서는
 
 $$
-\begin{aligned} x_{k+1}^{(i_k)}&=x_k-\delta_kG(x_k;i_k),\\ z_{k+1}^{(i_k)}&=\text{average of }z_k,x_{k+1}^{(i_k)} \end{aligned}
+\begin{aligned} x_{k+1}^{(i_k)}&=x_k-\delta_kG(x_k;i_k),\\ z_{k+1}^{(i_k)}&=\frac{d_kz_k+x_{k+1}^{(i_k)}}{d_k+1} \end{aligned}
 $$
 
 였어.
@@ -680,13 +657,13 @@ Theorem 7의 증명에는 세 가지 부등식만 필요해.
 첫 번째: $x_\star,y_{k+1}$ 사이의 interpolation
 
 $$
-\boxed{ \begin{aligned} I_{\star,y_{k+1}} ={}&f_\star-f(y_{k+1})\\ &-\langle f'(y_{k+1}),x_\star-y_{k+1}\rangle\\ &-\frac1{2L}\Vert f'(y_{k+1})\Vert ^2\ge0. \end{aligned} }
+\boxed{ \begin{aligned} {}&f_\star-f(y_{k+1})\\ &-\langle f'(y_{k+1}),x_\star-y_{k+1}\rangle\\ &-\frac1{2L}\Vert f'(y_{k+1})\Vert ^2\ge0. \end{aligned} }
 $$
 
 두 번째: $y_k,y_{k+1}$ 사이의 interpolation
 
 $$
-\boxed{ \begin{aligned} I_{y_k,y_{k+1}} ={}&f(y_k)-f(y_{k+1})\\ &-\langle f'(y_{k+1}),y_k-y_{k+1}\rangle\\ &-\frac1{2L} \Vert f'(y_k)-f'(y_{k+1})\Vert ^2\ge0. \end{aligned} }
+\boxed{ \begin{aligned} {}&f(y_k)-f(y_{k+1})\\ &-\langle f'(y_{k+1}),y_k-y_{k+1}\rangle\\ &-\frac1{2L} \Vert f'(y_k)-f'(y_{k+1})\Vert ^2\ge0. \end{aligned} }
 $$
 
 세 번째: Bounded variance
@@ -712,7 +689,7 @@ $$
 이들을 가중합하면
 
 $$
-\begin{aligned} 0\ge{}& -\lambda_1I_{\star,y_{k+1}} -\lambda_2I_{y_k,y_{k+1}}\\ &+e_k\left[ \mathbb E_i\Vert G(y_{k+1};i)-f'(y_{k+1})\Vert ^2-\sigma^2 \right]. \end{aligned}
+\begin{aligned} 0\ge{}& -\lambda_1\left[f_\star-f(y_{k+1})-\langle f'(y_{k+1}),x_\star-y_{k+1}\rangle-\frac1{2L}\Vert f'(y_{k+1})\Vert^2\right] -\lambda_2\left[f(y_k)-f(y_{k+1})-\langle f'(y_{k+1}),y_k-y_{k+1}\rangle-\frac1{2L}\Vert f'(y_k)-f'(y_{k+1})\Vert^2\right]\\ &+e_k\left[ \mathbb E_i\Vert G(y_{k+1};i)-f'(y_{k+1})\Vert ^2-\sigma^2 \right]. \end{aligned}
 $$
 
 ### 6.3. Averaging update가 gradient 내적을 소거한다
@@ -835,396 +812,168 @@ $$
 
 이 조건에는 **함수값 계수를 모두 0으로 만드는 선형 등식**과 $\lambda_{p,q}\ge0$, $e_k\ge0$도 함께 필요해. 두 averaging 방법에서 이 식들을 실제로 구성해 보자. $P,F$의 배치는 첨부된 2B·2C 실험 사양서 §3–5를 따르고, 해석적 계수와 multiplier는 앞의 Appendix E.2·E.3 증명을 사용해.
 
-이 절에서도 $G=P^\top P$는 Gram matrix, $G(x;i)$ 또는 $G(y;i)$는 stochastic oracle이야. 굵은 $\mathbf G_i$는 $P\mathbf G_i$가 해당 oracle 벡터가 되도록 고르는 **계수벡터**야. 실제 gradient와 그 계수벡터도 $f'(x)$와 $\mathbf g_x$로 구분해.
-
-Interpolation 행렬은 앞 문서와 동일해. 각 점의 위치·gradient·함수값 계수벡터를 $\mathbf x_p,\mathbf g_p,\mathbf f_p$라고 쓰면
-
-$$
-\begin{aligned}
-I_{p,q}(G,F)
-&=F(\mathbf f_p-\mathbf f_q)+\operatorname{Tr}(GM_{p,q}),\\
-M_{p,q}
-&=-\frac12\left[
-\mathbf g_q(\mathbf x_p-\mathbf x_q)^\top
-+(\mathbf x_p-\mathbf x_q)\mathbf g_q^\top
-\right]\\
-&\quad-\frac1{2L}
-(\mathbf g_p-\mathbf g_q)(\mathbf g_p-\mathbf g_q)^\top.
-\end{aligned}
-$$
-
-아래의 $\mathbf z_k,\mathbf y_k$ 등은 각 점의 위치 계수벡터를 알아보기 쉽게 쓴 것이야. 위치는 $x_\star$를 기준으로, 함수값은 $f_\star$를 기준으로 표현하므로 $\mathbf x_\star=\mathbf g_\star=\mathbf f_\star=0$으로 둘 수 있어.
+이 절의 $V_k,V_{k+1}^{(i)},M_{i,j},A_{\mathrm{var}}$는 Appendix E.7의 표기를 따른다. 두 상태를 가진 potential을 원본 Python 코드의 계수벡터로 구성한다. `xk`, `zk`, `gzk`, `Gxk`, `gzk1`, `fzk`, `fxk`, `fzk1`는 2B 코드의 실제 변수명이다. 코드의 상태 인덱스는 수식보다 1 크므로, 수식의 상태 $k$의 함수값 계수는 `d[k+1]`이다. Theorem 6의 $d_k$는 평균 가중치를 뜻하므로, 코드 계수를 설명할 때에는 이 둘을 문맥으로 구분한다.
 
 ### 7.1. Theorem 6의 Gram representation과 LMI
 
-**상태와 계수벡터**
+원본 2B 코드의 벡터 배치는
 
-Theorem 6에서는 다음 벡터들을 모아.
+$$
+P=[x_k-x_\star,\ z_k-x_\star,\ f'(z_k),\ G(x_k;1),\ldots,G(x_k;n),\ f'(z_{k+1}^{(1)}),\ldots,f'(z_{k+1}^{(n)})],
+\qquad G=P^\top P\in\mathbb S_+^{3+2n},
+$$
+
+$$
+F=[f(z_k)-f_\star,\ f(x_k)-f_\star,\ f(z_{k+1}^{(1)})-f_\star,\ldots,f(z_{k+1}^{(n)})-f_\star]
+$$
+
+이다. 원본의 `xk`, `zk`, `gzk`는 각각 $P$의 첫째, 둘째, 셋째 열을 고르고, `Gxk[i-1]`와 `gzk1[i-1]`는 해당 oracle과 다음 평균점의 gradient를 고른다. Unbiasedness는 코드의 `gxk = np.sum(Gxk, axis=0) / n`으로 반영된다. 함수값을 고르는 벡터는 `fzk`, `fxk`, `fzk1[i-1]`이다. $n=2$에서는 $G$가 7×7이고, 다섯 interpolation point에서 20개의 서로 다른 순서쌍이 생긴다.
+
+일반 potential은 원본의 $Q_k=\begin{pmatrix}a_k&c_k\\c_k&b_k\end{pmatrix}$와 $a'_k,d_k$를 사용한다. 이 문단의 $d_k$는 코드 `d[k+1]`에 저장되는 **potential의 함수값 계수**다. 원본의 `statesKG`, `statesK1G`와 `XK1`을 사용하면 논문의 행렬 표기를 다음처럼 구현할 수 있다.
 
 $$
 \begin{aligned}
-P=[\;&x_k-x_\star,\ z_k-x_\star,\ f'(z_k),\\
-&G(x_k;1),\ldots,G(x_k;n),\\
-&f'(z_{k+1}^{(1)}),\ldots,f'(z_{k+1}^{(n)})\;],\\
-G&=P^\top P\in\mathbb S_+^{3+2n}.
+V_k&=\mathtt{statesKG}\,Q_k\,\mathtt{statesKG}^{\top}
++a'_k(\mathtt{xk}-\mathtt{xs})(\mathtt{xk}-\mathtt{xs})^\top,\\
+V_{k+1}^{(i)}&=\mathtt{statesK1G}\,Q_{k+1}\,\mathtt{statesK1G}^{\top}
++a'_{k+1}(\mathtt{XK1}[i-1]-\mathtt{xs})(\mathtt{XK1}[i-1]-\mathtt{xs})^\top.
 \end{aligned}
 $$
 
-$\mathbf e_j\in\mathbb R^{3+2n}$를 $j$번째 표준기저벡터라고 하면 각 열을 고르는 계수벡터는
+`statesK1G`는 outcome $i$의 루프에서 구성된다. 따라서 potential의 기대 차이는
+
+$$
+\mathbb E_i\phi_{k+1}^f-\phi_k^f
+=\operatorname{Tr}\!\left[\left(\frac1n\sum_iV_{k+1}^{(i)}-V_k\right)G\right]
++F\left[\frac{d_{k+1}}n\sum_i\mathtt{fzk1}[i-1]-d_k\mathtt{fzk}\right]
+$$
+
+이다. 분산 행렬은 원본의 `Avar`이며
+
+$$
+A_{\mathrm{var}}=\frac1n\sum_i
+(\mathtt{Gxk}[i-1]-\mathtt{gxk})(\mathtt{Gxk}[i-1]-\mathtt{gxk})^\top,
+\qquad \operatorname{Tr}(GA_{\mathrm{var}})\le\sigma^2.
+$$
+
+원본 코드는 각 interpolation point의 계수벡터를 `X[i]`, `G[i]`, `F[i]`에 저장한다. 이때 `G[i]`는 Gram 행렬 $G$와 별개의 Python 딕셔너리 성분이고, `F[i]`도 함수값 행벡터 $F$의 성분을 고르는 계수벡터다. `TT = np.vstack((X[i], X[j], G[i], G[j]))`이므로 논문의 식 (19)에 있는 $M$으로
+
+$$M_{i,j}=\mathtt{TT}^{\top}M\mathtt{TT}$$
+
+를 계산한다. 한 단계 조건은
 
 $$
 \begin{aligned}
-\mathbf x_k&=\mathbf e_1,&
-\mathbf z_k&=\mathbf e_2,&
-\mathbf g_{z_k}&=\mathbf e_3,\\
-\mathbf G_i&=\mathbf e_{3+i},&
-\mathbf g_{x_k}&=\frac1n\sum_{i=1}^n\mathbf G_i,&
-\mathbf g_{z_{k+1}^{(i)}}&=\mathbf e_{3+n+i}.
+&\frac1n\sum_iV_{k+1}^{(i)}-V_k-e_kA_{\mathrm{var}}+\sum_{i\ne j}\lambda_{i,j}M_{i,j}\preceq0,\\
+&\frac{d_{k+1}}n\sum_i\mathtt{fzk1}[i-1]-d_k\mathtt{fzk}
++\sum_{i\ne j}\lambda_{i,j}(\mathtt{F}[i]-\mathtt{F}[j])=0,\\
+&\lambda_{i,j}\ge0,\qquad e_k\ge0.
 \end{aligned}
 $$
 
-야. 특히 $P\mathbf g_{x_k}=n^{-1}\sum_iG(x_k;i)=f'(x_k)$이므로 unbiasedness가 계수벡터에 반영돼.
+$n=2$에서는 7×7 LMI와 함수값 네 개에 대한 네 개의 scalar 등식이다. 알고리즘의 step-size와 평균 가중치를 고정하면 `statesKG`, `statesK1G`, `XK1`, `Avar`, `TT.T @ M @ TT`는 상수다. 따라서 각 행렬 성분에는 $Q_k,Q_{k+1},a'_k,a'_{k+1},e_k,\lambda_{i,j}$의 상수배와 합만 나타난다.
 
-다음 두 점도 새 열을 추가하지 않고 update로 표현할 수 있어.
+**Theorem 6의 한 단계 계수 대입**
 
-$$
-\boxed{
-\mathbf x_{k+1}^{(i)}=\mathbf x_k-\delta_k\mathbf G_i,\qquad
-\mathbf z_{k+1}^{(i)}
-=\frac{\mathbf x_k-\delta_k\mathbf G_i+d_k\mathbf z_k}{d_k+1}.
-}
-$$
-
-Function-value vector는
+여기부터 $d_k$는 다시 Theorem 6의 **평균 가중치**다. 현재·다음 함수값 계수에는 각각 $d_k\delta_kL$, $(d_k+1)\delta_kL$를 대입하고, $Q_k=Q_{k+1}=0$, $a'_k=a'_{k+1}=L/2$로 둔다. Appendix E.5의 평균을 사용할 때 이 두 함수값 계수는 논문의 $D_k,D_{k+1}$이다.
 
 $$
-F=[
-f(z_k)-f_\star,\ f(x_k)-f_\star,\
-f(z_{k+1}^{(1)})-f_\star,\ldots,
-f(z_{k+1}^{(n)})-f_\star
-]\in\mathbb R^{1\times(n+2)}
-$$
-
-야. $\mathbf f_{z_k},\mathbf f_{x_k},\mathbf f_{z_{k+1}^{(i)}}$는 각각 $F$의 첫 번째, 두 번째, $(i+2)$번째 성분을 고르는 $\mathbb R^{n+2}$의 계수벡터야.
-
-Interpolation point는
-
-$$
-\mathcal I_k=
-\{x_\star,x_k,z_k,z_{k+1}^{(1)},\ldots,z_{k+1}^{(n)}\}.
-$$
-
-$n=2$이면 $G\in\mathbb S_+^7$이고, 다섯 점의 서로 다른 순서쌍에서 총 20개의 interpolation inequality가 생겨.
-
-**두 상태가 들어간 potential의 행렬**
-
-일반 potential에서는 averaged iterate의 이차항에 $Q_k=\begin{pmatrix}a_k&c_k\\c_k&b_k\end{pmatrix}$를, SGD iterate의 거리항에 $a'_k$를 사용해. 함수값 계수 $d_k^{\mathrm{pot}}$는 averaging weight를 정하는 $d_k$와 구분하자. 이 구분은 §4.3 및 §7.3의 코드 표기와 같아.
-
-$$
-\begin{aligned}
-V_k={}&
-[\mathbf z_k\ \mathbf g_{z_k}]
-Q_k
-[\mathbf z_k\ \mathbf g_{z_k}]^\top
-+a'_k\mathbf x_k\mathbf x_k^\top,\\
-V_{k+1}^{(i)}={}&
-[\mathbf z_{k+1}^{(i)}\ \mathbf g_{z_{k+1}^{(i)}}]
-Q_{k+1}
-[\mathbf z_{k+1}^{(i)}\ \mathbf g_{z_{k+1}^{(i)}}]^\top\\
-&+a'_{k+1}
-\mathbf x_{k+1}^{(i)}(\mathbf x_{k+1}^{(i)})^\top.
-\end{aligned}
-$$
-
-그러면 potential difference가 실제로
-
-$$
-\begin{aligned}
-\Delta\phi_k(G,F)
-={}&\operatorname{Tr}\left[
-\left(\frac1n\sum_iV_{k+1}^{(i)}-V_k\right)G
-\right]\\
-&+F\left[
-\frac{d_{k+1}^{\mathrm{pot}}}{n}
-\sum_i\mathbf f_{z_{k+1}^{(i)}}
--d_k^{\mathrm{pot}}\mathbf f_{z_k}
-\right]
-\end{aligned}
-$$
-
-로 표현돼. 두 상태의 거리항과 gradient 항이 모두 같은 $G$에 대한 선형식에 들어간 것이야.
-
-Variance는 oracle을 호출하는 $x_k$에서 계산하므로
-
-$$
-A_{\mathrm{var}}
-=\frac1n\sum_i
-(\mathbf G_i-\mathbf g_{x_k})
-(\mathbf G_i-\mathbf g_{x_k})^\top,
-\qquad
-\operatorname{Tr}(GA_{\mathrm{var}})\le\sigma^2.
-$$
-
-따라서 이 알고리즘의 한 단계 SDP 조건은
-
-$$
-\boxed{
-\begin{aligned}
-&\frac1n\sum_iV_{k+1}^{(i)}-V_k-e_kA_{\mathrm{var}}
-+\sum_{p,q}\lambda_{p,q}M_{p,q}\preceq0,\\
-&\frac{d_{k+1}^{\mathrm{pot}}}{n}
-\sum_i\mathbf f_{z_{k+1}^{(i)}}
--d_k^{\mathrm{pot}}\mathbf f_{z_k}
-+\sum_{p,q}\lambda_{p,q}(\mathbf f_p-\mathbf f_q)=0,\\
-&\lambda_{p,q}\ge0,\qquad e_k\ge0.
-\end{aligned}
-}
-$$
-
-야. $n=2$에서는 7×7 LMI와 함수값 네 개에 대응하는 네 개의 scalar 선형 등식이야. Algorithm의 step-size와 averaging weight를 고정하면 모든 조건은 potential 계수와 multiplier에 대해 affine이야.
-
-**Theorem 6의 계수를 대입해 함수값 소거하기**
-
-앞의 한 단계 증명에서는
-
-$$
-Q_k=Q_{k+1}=0,\qquad a'_k=a'_{k+1}=\frac L2,
-$$
-
-$$
-d_k^{\mathrm{pot}}=d_k\delta_kL,\qquad
-d_{k+1}^{\mathrm{pot}}=(d_k+1)\delta_kL
-$$
-
-로 두었어. §4.1의 가중평균을 사용하면 이 함수값 계수들은 각각 $D_k,D_{k+1}$이 돼.
-
-Interpolation multiplier는
-
-$$
-\boxed{
 \lambda_{\star,x_k}=\delta_kL,\qquad
 \lambda_{x_k,z_{k+1}^{(i)}}=\frac{\delta_kL}{n},\qquad
 \lambda_{z_k,z_{k+1}^{(i)}}=\frac{d_k\delta_kL}{n}
-}
 $$
 
-이고 나머지는 0으로 둬. Averaged inequality 하나의 가중치를 outcome별 inequality에 나누어 주므로 $1/n$이 붙는 것이야. Variance multiplier는 정리의 $e_k$를 사용해.
-
-이제 선형 등식의 각 함수값 계수를 확인하면
+이외의 multiplier는 0으로 둔다. 함수값별 계수는
 
 $$
 \begin{aligned}
-f(x_k)-f_\star:\quad&
--\delta_kL+\sum_{i=1}^n\frac{\delta_kL}{n}=0,\\
-f(z_k)-f_\star:\quad&
--d_k\delta_kL+\sum_{i=1}^n\frac{d_k\delta_kL}{n}=0,\\
-f(z_{k+1}^{(i)})-f_\star:\quad&
-\frac{(d_k+1)\delta_kL}{n}
--\frac{\delta_kL}{n}
--\frac{d_k\delta_kL}{n}=0.
+f(x_k)-f_\star:&\quad -\delta_kL+\sum_i\frac{\delta_kL}{n}=0,\\
+f(z_k)-f_\star:&\quad -d_k\delta_kL+\sum_i\frac{d_k\delta_kL}{n}=0,\\
+f(z_{k+1}^{(i)})-f_\star:&\quad \frac{(d_k+1)\delta_kL}{n}-\frac{\delta_kL}{n}-\frac{d_k\delta_kL}{n}=0.
 \end{aligned}
 $$
 
-이야. Potential에 직접 들어가지 않는 $f(x_k)$까지 소거되는 것을 확인했어.
-
-**잔차의 완전제곱을 NSD 행렬로 옮기기**
-
-어떤 계수벡터에 대해서든 $\Vert P\mathbf v\Vert^2=\operatorname{Tr}(G\mathbf v\mathbf v^\top)$이야. 따라서 §3.3의 $\mathcal R_{6,k}$에 있는 세 제곱을 각각 outer product로 바꾸면
+§3.3의 세 완전제곱을 원본의 계수벡터로 쓰면 남은 행렬은
 
 $$
 \begin{aligned}
-&\frac1n\sum_iV_{k+1}^{(i)}-V_k-e_kA_{\mathrm{var}}
-+\sum_{p,q}\lambda_{p,q}M_{p,q}\\
+&\frac1n\sum_iV_{k+1}^{(i)}-V_k-e_kA_{\mathrm{var}}+\sum_{i\ne j}\lambda_{i,j}M_{i,j}\\
 &=-\frac{(d_k+1)\delta_k}{2n}\sum_i
-\left(
-\mathbf g_{z_{k+1}^{(i)}}
--\frac{d_k\mathbf g_{z_k}+\mathbf g_{x_k}-L\delta_k\mathbf G_i}{d_k+1}
-\right)\\
-&\qquad\quad{}\cdot
-\left(
-\mathbf g_{z_{k+1}^{(i)}}
--\frac{d_k\mathbf g_{z_k}+\mathbf g_{x_k}-L\delta_k\mathbf G_i}{d_k+1}
-\right)^\top\\
+\left(\mathtt{gzk1}[i-1]-\frac{d_k\mathtt{gzk}+\mathtt{gxk}-L\delta_k\mathtt{Gxk}[i-1]}{d_k+1}\right)
+\left(\mathtt{gzk1}[i-1]-\frac{d_k\mathtt{gzk}+\mathtt{gxk}-L\delta_k\mathtt{Gxk}[i-1]}{d_k+1}\right)^\top\\
 &\quad-\frac{d_k\delta_k}{2(d_k+1)}
-\big(\mathbf g_{z_k}+(L\delta_k-1)\mathbf g_{x_k}\big)
-\big(\mathbf g_{z_k}+(L\delta_k-1)\mathbf g_{x_k}\big)^\top\\
-&\quad-\frac{\delta_k}{2}
-\big[1+L\delta_k(1-L\delta_k)\big]
-\mathbf g_{x_k}\mathbf g_{x_k}^\top
+(\mathtt{gzk}+(L\delta_k-1)\mathtt{gxk})(\mathtt{gzk}+(L\delta_k-1)\mathtt{gxk})^\top\\
+&\quad-\frac{\delta_k}{2}[1+L\delta_k(1-L\delta_k)]\mathtt{gxk}\mathtt{gxk}^\top
 \preceq0.
 \end{aligned}
 $$
 
-를 얻어. 이 행렬과 $G$의 trace가 정확히 $-\mathcal R_{6,k}$야. 앞의 가중합은 $\Delta\phi_k-e_k\sigma^2+\mathcal R_{6,k}\le0$였고, Lagrangian은 $\Delta\phi_k-e_k\sigma^2$에 비음수 constraint 항들을 더하므로 잔차가 음의 부호로 나타나.
-
-$d_k\ge0$과 $0\le\delta_k\le(1+\sqrt5)/(2L)$에서 각 outer product 앞의 계수가 nonpositive이므로 LMI가 성립해. 함수값 선형 등식과 LMI를 모두 확인한 것이야.
+$d_k\ge0$, $0\le\delta_k\le(1+\sqrt5)/(2L)$에서 각 outer product의 계수는 0 이하다. 이 행렬과 $G$의 trace는 §3.3의 세 비음수 이차항 합에 음의 부호를 붙인 값이다. 함수값 등식과 LMI를 모두 확인했다.
 
 ### 7.2. Theorem 7의 Gram representation과 LMI
 
-**상태와 계수벡터**
-
-Primal averaging에서는
+원본 2C 코드에서는
 
 $$
-\begin{aligned}
-P&=[
-x_k-x_\star,\ y_k-x_\star,\ f'(y_k),\
-G(y_{k+1};1),\ldots,G(y_{k+1};n)
-],\\
-G&=P^\top P\in\mathbb S_+^{3+n}.
-\end{aligned}
+P=[x_k-x_\star,\ y_k-x_\star,\ f'(y_k),\ G(y_{k+1};1),\ldots,G(y_{k+1};n)],
+\qquad G=P^\top P\in\mathbb S_+^{3+n},
 $$
 
-를 사용해. 이번에는 $\mathbf e_j\in\mathbb R^{3+n}$이고,
+$$F=[f(y_k)-f_\star,\ f(y_{k+1})-f_\star]$$
+
+를 사용한다. `xk`, `yk`, `gyk`는 첫 세 열을, `Gyk1[i-1]`은 oracle 열을 고른다. `gyk1 = np.sum(Gyk1, axis=0) / n`은 $f'(y_{k+1})$의 계수벡터다. 평균점은 oracle 호출 전에 결정되므로 다음 평균점과 gradient가 각 outcome에 공통이다. $n=2$에서는 5×5 Gram 행렬과 세 interpolation point의 여섯 부등식을 사용한다.
+
+$V_k,V_{k+1}^{(i)}$는 §7.1과 같은 원본 `statesKG`, `statesK1G`, `XK1`의 식으로 구성하되, 평균점에 관한 열이 `yk`, `gyk`, `yk1(d[k], k)`, `gyk1`로 바뀐다. 분산 행렬은
 
 $$
-\begin{aligned}
-\mathbf x_k&=\mathbf e_1,&
-\mathbf y_k&=\mathbf e_2,&
-\mathbf g_{y_k}&=\mathbf e_3,\\
-\mathbf G_i&=\mathbf e_{3+i},&
-\mathbf g_{y_{k+1}}&=\frac1n\sum_i\mathbf G_i
-\end{aligned}
+A_{\mathrm{var}}=\frac1n\sum_i
+(\mathtt{Gyk1}[i-1]-\mathtt{gyk1})(\mathtt{Gyk1}[i-1]-\mathtt{gyk1})^\top.
 $$
 
-야. 다음 점의 계수벡터는
+함수값 계수벡터 `fyk`, `fyk1`은 각각 $F$의 첫째, 둘째 성분을 고른다. 따라서
 
 $$
-\boxed{
-\mathbf y_{k+1}
-=\frac{d_k\mathbf y_k+\delta_kL\mathbf x_k}{d_k+\delta_kL},
-\qquad
-\mathbf x_{k+1}^{(i)}=\mathbf x_k-\delta_k\mathbf G_i.
-}
-$$
-
-평균점 $y_{k+1}$과 그 gradient는 outcome마다 달라지지 않으므로 각각 하나의 계수벡터만 필요해. 여기서는 $d_k+\delta_kL>0$인 전이를 생각하며, 뒤의 step-size policy에서는 이 조건을 만족해.
-
-함수값은
-
-$$
-F=[f(y_k)-f_\star,\ f(y_{k+1})-f_\star]
-\in\mathbb R^{1\times2}
-$$
-
-만 필요하고, $\mathbf f_{y_k}=(1,0)^\top$, $\mathbf f_{y_{k+1}}=(0,1)^\top$야. Interpolation point도
-
-$$
-\mathcal I_k=\{x_\star,y_k,y_{k+1}\}
-$$
-
-의 세 개뿐이야. $n=2$이면 $G\in\mathbb S_+^5$이고 interpolation inequality는 여섯 개야.
-
-**두 상태의 potential과 선형 등식**
-
-이번 potential에서도 $y_k$에 관한 이차항과 $x_k$의 거리항을 구분해.
-
-$$
-\begin{aligned}
-V_k={}&
-[\mathbf y_k\ \mathbf g_{y_k}]
-Q_k
-[\mathbf y_k\ \mathbf g_{y_k}]^\top
-+a'_k\mathbf x_k\mathbf x_k^\top,\\
-V_{k+1}^{(i)}={}&
-[\mathbf y_{k+1}\ \mathbf g_{y_{k+1}}]
-Q_{k+1}
-[\mathbf y_{k+1}\ \mathbf g_{y_{k+1}}]^\top\\
-&+a'_{k+1}
-\mathbf x_{k+1}^{(i)}(\mathbf x_{k+1}^{(i)})^\top.
-\end{aligned}
-$$
-
-$V_{k+1}^{(i)}$의 첫 번째 항은 모든 outcome에서 같고, 두 번째 항만 outcome에 따라 달라져. 따라서
-
-$$
-\begin{aligned}
-\Delta\phi_k(G,F)
-={}&\operatorname{Tr}\left[
-\left(\frac1n\sum_iV_{k+1}^{(i)}-V_k\right)G
-\right]\\
-&+F\left[d_{k+1}\mathbf f_{y_{k+1}}-d_k\mathbf f_{y_k}\right].
-\end{aligned}
-$$
-
-Variance는 이번에 oracle을 호출한 $y_{k+1}$에서 계산해.
-
-$$
-A_{\mathrm{var}}
-=\frac1n\sum_i
-(\mathbf G_i-\mathbf g_{y_{k+1}})
-(\mathbf G_i-\mathbf g_{y_{k+1}})^\top.
+\mathbb E_i\phi_{k+1}^f-\phi_k^f
+=\operatorname{Tr}\!\left[\left(\frac1n\sum_iV_{k+1}^{(i)}-V_k\right)G\right]
++F[d_{k+1}\mathtt{fyk1}-d_k\mathtt{fyk}].
 $$
 
 전체 SDP 조건은
 
 $$
-\boxed{
 \begin{aligned}
-&\frac1n\sum_iV_{k+1}^{(i)}-V_k-e_kA_{\mathrm{var}}
-+\sum_{p,q}\lambda_{p,q}M_{p,q}\preceq0,\\
-&d_{k+1}\mathbf f_{y_{k+1}}-d_k\mathbf f_{y_k}
-+\sum_{p,q}\lambda_{p,q}(\mathbf f_p-\mathbf f_q)=0,\\
-&\lambda_{p,q}\ge0,\qquad e_k\ge0.
-\end{aligned}
-}
-$$
-
-이야. $n=2$에서는 5×5 LMI와 두 개의 scalar 선형 등식이 돼.
-
-**Theorem 7의 계수와 multiplier를 대입하기**
-
-앞의 정리는
-
-$$
-\begin{aligned}
-Q_k=Q_{k+1}&=0,&a'_k=a'_{k+1}&=\frac L2,\\
-d_{k+1}&=d_k+\delta_kL,&
-e_k&=\frac{L\delta_k^2}{2}
+&\frac1n\sum_iV_{k+1}^{(i)}-V_k-e_kA_{\mathrm{var}}+\sum_{i\ne j}\lambda_{i,j}M_{i,j}\preceq0,\\
+&d_{k+1}\mathtt{fyk1}-d_k\mathtt{fyk}+\sum_{i\ne j}\lambda_{i,j}(\mathtt{F}[i]-\mathtt{F}[j])=0,\\
+&\lambda_{i,j}\ge0,\qquad e_k\ge0.
 \end{aligned}
 $$
 
-를 선택하고,
+Theorem 7은 $Q_k=Q_{k+1}=0$, $a'_k=a'_{k+1}=L/2$, $d_{k+1}=d_k+\delta_kL$, $e_k=L\delta_k^2/2$와
+
+$$\lambda_{\star,y_{k+1}}=\delta_kL,\qquad\lambda_{y_k,y_{k+1}}=d_k$$
+
+를 선택한다. 다른 interpolation multiplier는 0이다. 함수값 계수는
 
 $$
-\lambda_{\star,y_{k+1}}=\delta_kL,\qquad
-\lambda_{y_k,y_{k+1}}=d_k
+-d_k\mathtt{fyk}+d_{k+1}\mathtt{fyk1}-\delta_kL\mathtt{fyk1}
++d_k(\mathtt{fyk}-\mathtt{fyk1})
+=(d_{k+1}-d_k-\delta_kL)\mathtt{fyk1}=0
 $$
 
-이외의 interpolation multiplier는 0으로 두어. 함수값 선형 등식에 넣으면
-
-$$
-\begin{aligned}
-&d_{k+1}\mathbf f_{y_{k+1}}-d_k\mathbf f_{y_k}
-+\delta_kL(\mathbf f_\star-\mathbf f_{y_{k+1}})\\
-&\qquad+d_k(\mathbf f_{y_k}-\mathbf f_{y_{k+1}})\\
-&=(d_{k+1}-d_k-\delta_kL)\mathbf f_{y_{k+1}}
-=0.
-\end{aligned}
-$$
-
-이야. 두 함수값의 계수가 실제로 소거됐어.
-
-남은 행렬은 §6.4의 두 제곱을 옮겨 쓰면
+으로 소거된다. 남은 행렬은
 
 $$
 \begin{aligned}
-&\frac1n\sum_iV_{k+1}^{(i)}-V_k-e_kA_{\mathrm{var}}
-+\sum_{p,q}\lambda_{p,q}M_{p,q}\\
-&=-\frac{\delta_k}{2}(1-L\delta_k)
-\mathbf g_{y_{k+1}}\mathbf g_{y_{k+1}}^\top\\
-&\quad-\frac{d_k}{2L}
-(\mathbf g_{y_{k+1}}-\mathbf g_{y_k})
-(\mathbf g_{y_{k+1}}-\mathbf g_{y_k})^\top
+&\frac1n\sum_iV_{k+1}^{(i)}-V_k-e_kA_{\mathrm{var}}+\sum_{i\ne j}\lambda_{i,j}M_{i,j}\\
+&=-\frac{\delta_k}{2}(1-L\delta_k)\mathtt{gyk1}\mathtt{gyk1}^\top
+-\frac{d_k}{2L}(\mathtt{gyk1}-\mathtt{gyk})(\mathtt{gyk1}-\mathtt{gyk})^\top
 \preceq0.
 \end{aligned}
 $$
 
-가 돼. $d_k\ge0$, $0\le\delta_k\le1/L$에서 두 outer product의 계수가 nonpositive이므로 LMI가 성립해.
+$d_k\ge0$, $0\le\delta_k\le1/L$에서 두 outer product의 계수는 0 이하다. Theorem 6과 달리 다음 평균점의 gradient를 oracle 결과마다 따로 둘 필요가 없다는 차이가 LMI 크기에도 반영된다.
 
-따라서 Theorem 7도 함수값 선형 등식과 NSD 행렬을 함께 구성한 SDP certificate야. Theorem 6에서는 outcome별 $z_{k+1}^{(i)}$와 그 gradient가 필요했고, Theorem 7에서는 하나의 $y_{k+1}$와 그 gradient면 충분하다는 차이가 행렬 크기에도 그대로 나타난 것이야.
-
-출처: 논문 Appendix E.2–E.3, pp.40–42 및 Appendix E.7, pp.48–49; 첨부된 2B·2C 실험 사양서 §3–5. 위의 outer-product 식은 각 정리의 잔차를 해당 Gram 표현으로 옮겨 쓴 것이야.
+출처: 논문 Appendix E.2–E.3, pp.40–42 및 Appendix E.7, pp.48–49; 원본 `B_StochasticGradientDescentWithAveraging.py`, `C_StochasticGradientDescentWithPrimalAveraging.py`의 계수벡터와 LMI 구성. 위 식들은 논문의 증명을 해당 원본 구현의 Gram 배치에 대입한 것이다.
 
 ### 7.3. SDP numerical experiment의 규모와 objective
 
@@ -1236,25 +985,25 @@ $$
 | $n=2$일 때             | 5×5                | 7×7                      | 5×5                          |
 | Interpolation point 수 ($n=2$)    | 4                  | 5                        | 3                            |
 | 함수값 변수 수 ($n=2$)                 | 3                  | 4                        | 2                            |
-| 1차 SDP                   | $\max d_N$     | $\max d_N^{\mathrm{pot}}$           | 해당 없음                        |
+| 1차 SDP                   | $\max d_N$     | $\max d_N$           | 해당 없음                        |
 | 2차 SDP                   | $\min\sum e_k$ | $\min\sum e_k$       | 해당 없음                        |
 | Primal Averaging의 단일 SDP | —                  | —                        | $\min\sum e_k$           |
 
 Theorem 6에 대응하는 Python 실험은 보다 일반적인 potential
 
 $$
-\begin{aligned} \phi_k^f ={}& \begin{pmatrix}z_k-x_\star\\f'(z_k)\end{pmatrix}^{\!\top} (Q_k\otimes I_d) \begin{pmatrix}z_k-x_\star\\f'(z_k)\end{pmatrix}\\ &+d_k^{\mathrm{pot}}(f(z_k)-f_\star) +a_k'\Vert x_k-x_\star\Vert ^2 \end{aligned}
+\begin{aligned} \phi_k^f ={}& \begin{pmatrix}z_k-x_\star\\f'(z_k)\end{pmatrix}^{\!\top} (Q_k\otimes I_d) \begin{pmatrix}z_k-x_\star\\f'(z_k)\end{pmatrix}\\ &+d_k(f(z_k)-f_\star) +a_k'\Vert x_k-x_\star\Vert ^2 \end{aligned}
 $$
 
 의 계수를 탐색해.
 
-여기서 $d_k^{\mathrm{pot}}$는 코드의 함수값 계수이고, Theorem 6의 averaging weight용 $d_k$와 구분했어. 원래 Python 사양서의 $d_k$와 배열의 함수값 계수를 이 절에서는 $d_k^{\mathrm{pot}}$로 표시하는 것이야.
+이 §7.3의 $d_k$는 원본 코드의 함수값 계수다. Theorem 6의 $d_k$는 평균 가중치이며, 그 한 단계 함수값 계수는 $L\delta_kd_k$다.
 
-이 실험의 averaging update는 §4.3에서 설명한 산술평균이야. 따라서 일반 step-size에서 §4.1의 $D_k$ 가중평균과 같은 알고리즘으로 취급하면 안 돼. 기본 설정 $\delta_k=1/L$에서는 두 평균이 일치하며, 해석적 선택도 $d_k^{\mathrm{pot}}=D_k=k$로 같아.
+이 실험의 averaging update는 §4.3에서 설명한 산술평균이야. 따라서 일반 step-size에서 §4.1의 $D_k$ 가중평균과 같은 알고리즘으로 취급하면 안 돼. 기본 설정 $\delta_k=1/L$에서는 두 평균이 일치하며, 해석적 선택도 $d_k=k$로 같아.
 
 중간 상태 $k=1,\ldots,N-1$의 탐색 조건은 다음과 같아.
 
-- `relax=0`: $Q_k,a_k',d_k^{\mathrm{pot}}$를 자유롭게 탐색하며 최종 거리항은 제거.
+- `relax=0`: $Q_k,a_k',d_k$를 자유롭게 탐색하며 최종 거리항은 제거.
 - `relax=1`: $Q_k=0,\ a_k'=L/2$로 제한하고 함수값 계수만 탐색. 최종 거리항은 유지.
 
 Theorem 7의 Python 실험도 유사한 potential을 사용하지만, 중요한 차이는
@@ -1294,7 +1043,7 @@ $$
 세 방법 모두 최종 함수값 계수는
 
 $$
-\boxed{D_N=N}
+\boxed{\sum_{t=0}^{N-1}L\delta_t=N}
 $$
 
 이 돼.
@@ -1322,16 +1071,8 @@ Vanilla SGD에서는 $e_k$가 선형으로 증가하지만, PR Averaging에서�
 | Method           | $\sum_{k=0}^{N-1}e_k$ | Order        |
 | ---------------- | -------------------------- | ------------ |
 | Vanilla SGD      | $\frac{N(N+3)}{4L}$    | $O(N^2)$ |
-| PR Averaging     | $\frac{N+H_N}{2L}$     | $O(N)$   |
+| PR Averaging     | $\frac{N+\sum_{t=1}^N\frac1t}{2L}$     | $O(N)$   |
 | Primal Averaging | $\frac{N}{2L}$         | $O(N)$   |
-
-여기서
-
-$$
-H_N=\sum_{t=1}^N\frac1t
-$$
-
-는 harmonic number야.
 
 따라서 각각의 convergence bound는 다음과 같아.
 
@@ -1344,7 +1085,7 @@ $$
 Polyak–Ruppert Averaging
 
 $$
-\boxed{ \mathbb E[f(z_N)-f_\star] \le \frac{L\Vert x_0-x_\star\Vert ^2}{2N} +\frac{\sigma^2}{2L} \left(1+\frac{H_N}{N}\right). }
+\boxed{ \mathbb E[f(z_N)-f_\star] \le \frac{L\Vert x_0-x_\star\Vert ^2}{2N} +\frac{\sigma^2}{2L} \left(1+\frac{\sum_{t=1}^N\frac1t}{N}\right). }
 $$
 
 Primal Averaging
@@ -1361,7 +1102,7 @@ $$
 
 그러나 이것만으로 수렴이 증명된 것은 아니야.
 
-왜냐하면 $D_N=N$으로 나누었을 때 averaging의 noise contribution은 여전히 $O(1)$이기 때문이야.
+왜냐하면 $\sum_{t=0}^{N-1}L\delta_t=N$으로 나누었을 때 averaging의 noise contribution은 여전히 $O(1)$이기 때문이야.
 
 따라서 고정 step-size는 variance accumulation을 제어하지만, 이 bound에서 오차를 0으로 보내려면 step-size를 감소시켜야 해.
 
@@ -1387,24 +1128,24 @@ $$
 d_{k+1}=d_k+L\delta_k
 $$
 
-를 사용하고, Theorem 6도 Appendix E.5의 가중 평균 표현을 사용하면 같은 누적 계수 $D_k$를 얻어.
+를 사용하고, Theorem 6도 Appendix E.5의 가중 평균 표현을 사용하면 같은 누적 계수 $\sum_{t=0}^{k-1}L\delta_t$를 얻어.
 
 따라서 세 방법 모두
 
 $$
-\boxed{ D_N=\sum_{k=0}^{N-1}L\delta_k =\sum_{t=1}^Nt^{-\alpha}. }
+\boxed{ \sum_{k=0}^{N-1}L\delta_k =\sum_{t=1}^Nt^{-\alpha}. }
 $$
 
 $0<\alpha<1$이면
 
 $$
-\boxed{ D_N=\Theta(N^{1-\alpha}). }
+\boxed{ \sum_{t=0}^{N-1}L\delta_t=\Theta(N^{1-\alpha}). }
 $$
 
 그러므로 초기 거리항으로부터 오는 contribution은 공통적으로
 
 $$
-\boxed{ \frac{L\Vert x_0-x_\star\Vert ^2}{2D_N} =O(N^{\alpha-1}). }
+\boxed{ \frac{L\Vert x_0-x_\star\Vert ^2}{2\sum_{t=0}^{N-1}L\delta_t} =O(N^{\alpha-1}). }
 $$
 
 이야.
@@ -1418,7 +1159,7 @@ $$
 Theorem 5에서는
 
 $$
-e_k=\frac{L\delta_k^2}{2}(1+D_{k+1})
+e_k=\frac{L\delta_k^2}{2}(1+\sum_{t=0}^{k}L\delta_t)
 $$
 
 였지.
@@ -1426,13 +1167,13 @@ $$
 큰 $k$에 대해
 
 $$
-\delta_k=\Theta(k^{-\alpha}), \qquad D_{k+1}=\Theta(k^{1-\alpha})
+\delta_k=\Theta(k^{-\alpha}), \qquad \sum_{t=0}^{k}L\delta_t=\Theta(k^{1-\alpha})
 $$
 
 이므로
 
 $$
-\begin{aligned} e_k &=O(k^{-2\alpha}) +O(k^{1-3\alpha}). \end{aligned}
+\begin{aligned} \text{PR: }e_k &=O(k^{-2\alpha}) +O(k^{1-3\alpha}). \end{aligned}
 $$
 
 특히 $0<\alpha<2/3$일 때 지배적인 누적항은
@@ -1444,13 +1185,13 @@ $$
 따라서
 
 $$
-\frac{\sum_{k=0}^{N-1}e_k}{D_N} =O\left( \frac{N^{2-3\alpha}}{N^{1-\alpha}} \right)
+\frac{\sum_{k=0}^{N-1}e_k}{\sum_{t=0}^{N-1}L\delta_t} =O\left( \frac{N^{2-3\alpha}}{N^{1-\alpha}} \right)
 $$
 
 이므로
 
 $$
-\boxed{ \frac{\sum e_k}{D_N}=O(N^{1-2\alpha}). }
+\boxed{ \frac{\sum e_k}{\sum_{t=0}^{N-1}L\delta_t}=O(N^{1-2\alpha}). }
 $$
 
 결국 Table 2에 나타나는 vanilla SGD의 두 항은
@@ -1474,7 +1215,7 @@ $$
 따라서
 
 $$
-\boxed{\alpha_{\mathrm{SGD}}^{\mathrm{opt}}=\frac23}.
+\boxed{\alpha=\frac23}.
 $$
 
 실제 $\alpha=2/3$에서는 $\sum e_k$에 harmonic sum이 발생하므로 로그 항이 추가돼.
@@ -1487,56 +1228,56 @@ $$
 
 ### 9.3. PR Averaging과 Primal Averaging의 noise contribution
 
-Theorem 7에서는
+Theorem 7의 오차 계수는
 
 $$
-e_k^{\mathrm{PA}}=\frac{L\delta_k^2}{2}
+e_k=\frac{L\delta_k^2}{2}
 $$
 
 이므로
 
 $$
-e_k^{\mathrm{PA}} =\frac1{2L(k+1)^{2\alpha}}.
+e_k =\frac1{2L(k+1)^{2\alpha}}.
 $$
 
 따라서
 
 $$
-\sum_{k=0}^{N-1}e_k^{\mathrm{PA}} =\frac1{2L}\sum_{t=1}^N t^{-2\alpha}.
+\sum_{k=0}^{N-1}e_k =\frac1{2L}\sum_{t=1}^N t^{-2\alpha}.
 $$
 
 특히 $0<\alpha<1/2$이면
 
 $$
-\sum_{k=0}^{N-1}e_k^{\mathrm{PA}} =\Theta(N^{1-2\alpha}).
+\sum_{k=0}^{N-1}e_k =\Theta(N^{1-2\alpha}).
 $$
 
 따라서
 
 $$
-\boxed{ \frac{\sum e_k^{\mathrm{PA}}}{D_N} =O(N^{-\alpha}). }
+\boxed{ \frac{\sum e_k}{\sum_{t=0}^{N-1}L\delta_t} =O(N^{-\alpha}). }
 $$
 
 Theorem 6의 PR Averaging에서도
 
 $$
-e_k^{\mathrm{PR}} =\frac{L\delta_k^2}{2} \left(1+\frac{L^2\delta_k^2}{D_{k+1}}\right)
+e_k =\frac{L\delta_k^2}{2} \left(1+\frac{L^2\delta_k^2}{\sum_{t=0}^{k}L\delta_t}\right)
 $$
 
 이야. 여기서 추가 variance 계수 자체는
 
 $$
-e_k^{\mathrm{PR}}-\frac{L\delta_k^2}{2}
-=\frac{L^3\delta_k^4}{2D_{k+1}}
+e_k-\frac{L\delta_k^2}{2}
+=\frac{L^3\delta_k^4}{2\sum_{t=0}^{k}L\delta_t}
 =O(k^{-1-3\alpha})
 $$
 
-이므로 $\alpha>0$에서 그 누적합은 유계야. 이를 $D_N=\Theta(N^{1-\alpha})$로 나누면 추가 contribution은 $O(N^{\alpha-1})$이 돼. $0<\alpha<1/2$에서는 이 항이 $O(N^{-\alpha})$보다 빠르게 감소하므로, 두 averaging 방법의 지배적인 noise rate는 같아.
+이므로 $\alpha>0$에서 그 누적합은 유계야. 이를 $\sum_{t=0}^{N-1}L\delta_t=\Theta(N^{1-\alpha})$로 나누면 추가 contribution은 $O(N^{\alpha-1})$이 돼. $0<\alpha<1/2$에서는 이 항이 $O(N^{-\alpha})$보다 빠르게 감소하므로, 두 averaging 방법의 지배적인 noise rate는 같아.
 
 즉, 두 averaging 방법 모두 Table 2의 형태로
 
 $$
-\boxed{ \mathbb E[f(\text{averaged iterate})-f_\star] \lesssim \underbrace{O(N^{\alpha-1})}_{\text{Initial distance}} + \underbrace{O(N^{-\alpha})}_{\text{Variance}} }
+\boxed{ \mathbb E[f(z_N)-f_\star],\ \mathbb E[f(y_N)-f_\star] \lesssim \underbrace{O(N^{\alpha-1})}_{\text{Initial distance}} + \underbrace{O(N^{-\alpha})}_{\text{Variance}} }
 $$
 
 를 얻어.
@@ -1552,7 +1293,7 @@ $$
 따라서
 
 $$
-\boxed{ \alpha_{\mathrm{Averaging}}^{\mathrm{opt}}=\frac12. }
+\boxed{ \alpha=\frac12. }
 $$
 
 $\alpha=1/2$에서는
@@ -1596,7 +1337,7 @@ Table 2 — 논문에 제시된 수렴률
 | Averaging | $\alpha=1/2$   | $O((\log N)N^{-1/2})$ |
 | Averaging | $1/2<\alpha<1$ | $O(N^{\alpha-1})$     |
 
-이것은 Appendix E.5의 $\sum\delta_k^2$, $\sum\delta_k^2D_{k+1}$를 각각 수렴하는 급수와 발산하는 급수로 구분하여 계산한 결과야.
+이것은 Appendix E.5의 $\sum\delta_k^2$, $\sum\delta_k^2\sum_{t=0}^{k}L\delta_t$를 각각 수렴하는 급수와 발산하는 급수로 구분하여 계산한 결과야.
 
 따라서 Table 2의 핵심 비교인 optimal $\alpha=2/3$ 대 $1/2$ 및 두 방법의 수렴률 차이는 유지되지만, 전체 $\alpha$ 범위에 대한 엄밀한 해석에는 위 구간별 표현이 필요해.
 
@@ -1607,7 +1348,7 @@ Table 2 — 논문에 제시된 수렴률
 두 방법 모두 Appendix E.5의 누적 계수
 
 $$
-D_{k+1}=D_k+L\delta_k
+\sum_{t=0}^{k}L\delta_t=\sum_{t=0}^{k-1}L\delta_t+L\delta_k
 $$
 
 를 사용하도록 표현하면, averaging weight 자체는 동일한 형태를 갖게 돼.
@@ -1615,13 +1356,13 @@ $$
 PR Averaging
 
 $$
-\boxed{ \begin{aligned} x_{k+1}^{(i)}&=x_k-\delta_kG(x_k;i),\\ z_{k+1}^{(i)} &=\frac{D_kz_k+L\delta_kx_{k+1}^{(i)}}{D_{k+1}}. \end{aligned} }
+\boxed{ \begin{aligned} x_{k+1}^{(i)}&=x_k-\delta_kG(x_k;i),\\ z_{k+1}^{(i)} &=\frac{\left(\sum_{t=0}^{k-1}L\delta_t\right)z_k+L\delta_kx_{k+1}^{(i)}}{\sum_{t=0}^{k}L\delta_t}. \end{aligned} }
 $$
 
 Primal Averaging
 
 $$
-\boxed{ \begin{aligned} y_{k+1} &=\frac{D_ky_k+L\delta_kx_k}{D_{k+1}},\\ x_{k+1}^{(i)}&=x_k-\delta_kG(y_{k+1};i). \end{aligned} }
+\boxed{ \begin{aligned} y_{k+1} &=\frac{\left(\sum_{t=0}^{k-1}L\delta_t\right)y_k+L\delta_kx_k}{\sum_{t=0}^{k}L\delta_t},\\ x_{k+1}^{(i)}&=x_k-\delta_kG(y_{k+1};i). \end{aligned} }
 $$
 
 차이를 보면 PR은 갱신된 iterate를 평균에 넣고, primal averaging은 갱신되기 전의 iterate를 평균에 넣으면서 그 평균을 gradient 평가점으로 사용해.
@@ -1629,16 +1370,16 @@ $$
 그리고 두 방법의 noise coefficient는
 
 $$
-\begin{aligned} e_k^{\mathrm{PR}} &=\frac{L\delta_k^2}{2} \left(1+\frac{L^2\delta_k^2}{D_{k+1}}\right),\\ e_k^{\mathrm{PA}} &=\frac{L\delta_k^2}{2}. \end{aligned}
+\begin{aligned} \text{PR: }e_k &=\frac{L\delta_k^2}{2} \left(1+\frac{L^2\delta_k^2}{\sum_{t=0}^{k}L\delta_t}\right),\\ \text{Primal: }e_k &=\frac{L\delta_k^2}{2}. \end{aligned}
 $$
 
 따라서
 
 $$
-\boxed{ e_k^{\mathrm{PR}}-e_k^{\mathrm{PA}} =\frac{L^3\delta_k^4}{2D_{k+1}}\ge0. }
+\boxed{ \frac{L\delta_k^2}{2}\left(1+\frac{L^2\delta_k^2}{\sum_{t=0}^{k}L\delta_t}\right)-\frac{L\delta_k^2}{2}=\frac{L^3\delta_k^4}{2\sum_{t=0}^{k}L\delta_t}\ge0. }
 $$
 
-즉, 같은 step-size policy와 $D_k$를 사용해 얻은 두 정리의 해석적 upper bound에서는 primal averaging의 variance 계수가 더 작아.
+즉, 같은 step-size policy와 $\sum_{t=0}^{k-1}L\delta_t$를 사용해 얻은 두 정리의 해석적 upper bound에서는 primal averaging의 variance 계수가 더 작아.
 
 물론 이는 두 정리가 제공하는 보증의 비교이며, 서로 다른 알고리즘이 실제 모든 문제에서 같은 순서로 성능을 보인다는 의미는 아니야.
 
@@ -1650,7 +1391,7 @@ $$
 | Noise                | 없음                                               | 있음                                   | 있음                      | 있음                      |
 | 분석 함수값               | $f(x_k)$                                     | $f(x_k)$                         | $f(z_k)$            | $f(y_k)$            |
 | Potential의 거리항       | $L^2\Vert x_k-x_\star\Vert ^2$                  | $\frac L2\Vert x_k-x_\star\Vert ^2$ | 동일                      | 동일                      |
-| Variance coefficient | 없음                                               | $e_k=\frac{L\delta_k^2}{2}(1+D_{k+1})$            | $e_k=\frac{L\delta_k^2}{2}\left(1+\frac{L^2\delta_k^2}{D_{k+1}}\right)$ | $e_k=L\delta_k^2/2$ |
+| Variance coefficient | 없음                                               | $e_k=\frac{L\delta_k^2}{2}(1+\sum_{t=0}^{k}L\delta_t)$            | $e_k=\frac{L\delta_k^2}{2}\left(1+\frac{L^2\delta_k^2}{\sum_{t=0}^{k}L\delta_t}\right)$ | $e_k=L\delta_k^2/2$ |
 | 주요 보증                | $O(k^{-1})$ 함수값, $O(k^{-2})$ gradient 제곱 | $O(k^{-1/3})$                    | $O(k^{-1/2})$       | $O(k^{-1/2})$       |
 
 Stochastic 방법의 수렴률은 각 정리에서 선택한 decreasing step-size의 최적 exponent와 Table 2의 관례에 따라 logarithmic factor를 생략한 값이야.
@@ -1686,15 +1427,15 @@ Table 2 — Convergence rates
 Step-size exponent와 누적 variance의 균형
 
 $$
-\begin{aligned} \mathrm{SGD}:&\quad \alpha^*=2/3,\\ \mathrm{Averaging}:&\quad \alpha^*=1/2. \end{aligned}
+\begin{aligned} \mathrm{SGD}:&\quad \alpha=2/3,\\ \mathrm{Averaging}:&\quad \alpha=1/2. \end{aligned}
 $$
 
 마지막으로, 이번 절의 핵심을 하나의 수식으로 정리하면 다음이야.
 
 $$
-\boxed{ \mathbb E[f(\text{output}_N)-f_\star] \le \frac{\text{Initial potential}}{D_N} + \frac{\sigma^2\sum_{k=0}^{N-1}e_k}{D_N}. }
+\boxed{ \mathbb E[f(x_N)-f_\star],\ \mathbb E[f(z_N)-f_\star],\ \mathbb E[f(y_N)-f_\star] \le \frac{L\Vert x_0-x_\star\Vert^2/2}{\sum_{t=0}^{N-1}L\delta_t} + \frac{\sigma^2\sum_{k=0}^{N-1}e_k}{\sum_{t=0}^{N-1}L\delta_t}. }
 $$
 
-Averaging의 가장 중요한 역할은 $D_N$을 키우는 것이 아니라, 그에 비해 $\sum e_k$가 증가하는 속도를 낮추는 것이야.
+Averaging의 가장 중요한 역할은 $\sum_{t=0}^{N-1}L\delta_t$을 키우는 것이 아니라, 그에 비해 $\sum e_k$가 증가하는 속도를 낮추는 것이야.
 
 이것이 SDP 수치탐색에서 단순한 potential을 발견하는 과정, Theorem 6·7의 해석적 certificate, 그리고 Table 2의 수렴률 개선을 하나로 연결하는 중심 원리야.

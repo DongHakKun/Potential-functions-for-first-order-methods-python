@@ -17,7 +17,7 @@ f(x)=\frac1n\sum_{\ell=1}^nf_\ell(x),\qquad
 f_\ell\in\mathcal F_L,\qquad f_\ell'(x_\star)=0\quad(\ell=1,\ldots,n)
 $$
 
-앞의 bounded variance setting과 달리, 모든 component의 gradient가 공통 최적점에서 0이라고 가정한다. 이 가정은 component별 interpolation에 반영하며, 별도의 variance 항 $e_k\sigma^2$나 행렬 $A_{\mathrm{var}}$는 사용하지 않는다.
+앞의 bounded variance setting과 달리, 모든 component의 gradient가 공통 최적점에서 0이라고 가정한다. 이 가정은 component별 interpolation에 반영하며, 별도의 분산 상한 제약과 오차항은 사용하지 않는다.
 
 Appendix F.2에서는 다음 potential의 형태를 정하고 그 계수를 찾는다. 전체 gradient뿐 아니라 component gradient의 norm 제곱도 포함한다는 점이 앞의 실험과 다르다.
 

@@ -330,33 +330,24 @@ $$
 
 ### 3.3. Potential difference의 linearity
 
-GD에서 했던 것처럼
+GD에서 했던 것처럼 기대 potential 차이를 전개해 보자. $n=2$이고 $\delta_k$는 고정되어 있다고 하자.
 
 $$
-\Delta\phi_k(G,F) =\mathbb E_i[\phi_{k+1}^f]-\phi_k^f
+\begin{aligned}
+\mathbb E_i[\phi_{k+1}^f]-\phi_k^f
+={}&(a_{k+1}-a_k)G_{11}\\
+&-(a_{k+1}\delta_k+c_k)(G_{12}+G_{13})\\
+&+\frac{a_{k+1}\delta_k^2}{2}(G_{22}+G_{33})
+-\frac{b_k}{4}(G_{22}+2G_{23}+G_{33})\\
+&+\frac{b_{k+1}}2(G_{44}+G_{55})\\
+&+c_{k+1}\big[G_{14}+G_{15}-\delta_k(G_{24}+G_{35})\big]\\
+&+\frac{d_{k+1}}2\left[f(x_{k+1}^{(1)})+f(x_{k+1}^{(2)})-2f_\star\right]-d_k\left[f(x_k)-f_\star\right].
+\end{aligned}
 $$
 
-를 전개해 보자.
+각 Gram 성분 $G_{ij}$와 함수값 차이 $f(x_k)-f_\star$, $f(x_{k+1}^{(i)})-f_\star$는 일차로 등장해. 반대로 $G,F$를 고정해서 보면, 각 항의 계수도 미지의 potential 계수 $a_k,b_k,c_k,d_k,a_{k+1},b_{k+1},c_{k+1},d_{k+1}$에 대해 선형이야. 여기서 step-size $\delta_k$와 $L$은 고정된 상수야. 두 변수군을 동시에 미지수로 보면 계수와 Gram 성분의 곱이 있으므로 jointly linear라는 뜻은 아니야.
 
-$n=2$이고 $\delta_k$는 고정되어 있다고 하자.
-
-$$
-\begin{aligned} \Delta\phi_k(G,F) ={}&(a_{k+1}-a_k)G_{11}\\ &-(a_{k+1}\delta_k+c_k)(G_{12}+G_{13})\\ &+\frac{a_{k+1}\delta_k^2}{2}(G_{22}+G_{33})\\ &-\frac{b_k}{4}(G_{22}+2G_{23}+G_{33})\\ &+\frac{b_{k+1}}2(G_{44}+G_{55})\\ &+c_{k+1}\big[G_{14}+G_{15} -\delta_k(G_{24}+G_{35})\big]\\ &+\frac{d_{k+1}}2(F_2+F_3)-d_kF_1. \end{aligned}
-$$
-
-식은 길어졌지만 구조는 이전과 동일해.
-
-각 $G_{ij}$와 $F_i$가 모두 선형으로만 등장하고 있지.
-
-따라서 적절한 대칭행렬 $H_k^{\mathrm{SGD}}\in\mathbb S^5$에 대해
-
-$$
-\boxed{ \Delta\phi_k(G,F) =\operatorname{Tr}(H_k^{\mathrm{SGD}}G) +\frac{d_{k+1}}2(F_2+F_3)-d_kF_1 }
-$$
-
-로 쓸 수 있어.
-
-여기까지는 GD와 같은 원리야.
+다음 절에서는 논문 Appendix E.7의 $V_k,V_{k+1}^{(i)}$로 이 식을 나타낼 거야.
 
 ### 3.4. 일반 $n$에서의 계수벡터와 potential 행렬
 
@@ -405,27 +396,15 @@ $$
 
 가 돼. 두 행렬은 $\mathbb S^{1+2n}$에 속하고, 각각 $\operatorname{Tr}(GV_k)$와 $\operatorname{Tr}(GV_{k+1}^{(i)})$가 현재와 다음 potential의 이차항이야.
 
-따라서 §3.3의 $H_k^{\mathrm{SGD}}$는 일반 $n$에서도
+따라서 일반 $n$에서 potential difference 전체는
 
 $$
-\boxed{
-H_k^{\mathrm{SGD}}
-=\frac1n\sum_{i=1}^nV_{k+1}^{(i)}-V_k
-\in\mathbb S^{1+2n}
-}
+\mathbb E_i[\phi_{k+1}^f]-\phi_k^f
+=\operatorname{Tr}\!\left[G\left(\frac1n\sum_{i=1}^nV_{k+1}^{(i)}-V_k\right)\right]
++F\left[\frac{d_{k+1}}n\sum_{i=1}^n\mathbf f_i-d_k\mathbf f_0\right]
 $$
 
-로 정의할 수 있어. Potential difference 전체는
-
-$$
-\Delta\phi_k(G,F)
-=\operatorname{Tr}(GH_k^{\mathrm{SGD}})
-+F\left[
-\frac{d_{k+1}}n\sum_{i=1}^n\mathbf f_i-d_k\mathbf f_0
-\right]
-$$
-
-이고, $n=2$를 대입하면 §3.3에서 성분별로 전개한 식과 같아.
+야. $n=2$를 대입하면 §3.3에서 성분별로 전개한 식과 같아.
 
 출처: 논문 Appendix E.7 및 첨부된 SGD 실험 사양서 §3.
 
@@ -438,7 +417,7 @@ $$
 우리가 이미 알고 있는 조건은
 
 $$
-\boxed{ \begin{aligned} I_{p,q}(G,F) ={}&f(x_p)-f(x_q)\\ &-\langle f'(x_q),x_p-x_q\rangle\\ &-\frac1{2L}\Vert f'(x_p)-f'(x_q)\Vert ^2 \ge0. \end{aligned} }
+\boxed{ \begin{aligned} {}&f(x_p)-f(x_q)\\ &-\langle f'(x_q),x_p-x_q\rangle\\ &-\frac1{2L}\Vert f'(x_p)-f'(x_q)\Vert ^2 \ge0. \end{aligned} }
 $$
 
 이야.
@@ -446,7 +425,7 @@ $$
 다만 SGD에서는 interpolation point가
 
 $$
-\mathcal I_k= \{\star,0,1,\ldots,n\}
+I= \{\star,0,1,\ldots,n\}
 $$
 
 으로 늘어났어. 여기서 $0$은 현재 점 $x_k$, $i$는 stochastic outcome에 따른 $x_{k+1}^{(i)}$를 뜻해.
@@ -454,7 +433,7 @@ $$
 $n=2$이면
 
 $$
-\mathcal I_k=\{\star,0,1,2\}.
+I=\{\star,0,1,2\}.
 $$
 
 따라서 네 점 사이에서 서로 다른 순서쌍을 선택하면
@@ -494,14 +473,14 @@ $$
 따라서
 
 $$
-I_{p,q}(G,F) =F(\mathbf f_p-\mathbf f_q) +\operatorname{Tr}(GM_{p,q})\ge0
+F(\mathbf f_p-\mathbf f_q) +\operatorname{Tr}(GM_{p,q})\ge0
 $$
 
 로 표현할 수 있어.
 
 $M$은 $L$로 정해지는 고정 행렬이고, $M_{p,q}$는 이 $M$을 현재 Gram 좌표로 옮긴 행렬이야. $M_{p,q}$에는 $\mathbf x_i=\mathbf x_0-\delta_k\mathbf G_i$가 들어가므로 step-size $\delta_k$가 달라지면 행렬도 달라질 수 있어. 한 전이의 $\delta_k$를 고정한 뒤에는 SDP의 결정변수와 무관한 상수행렬이야.
 
-각 constraint에는 $\lambda_{p,q}\ge0$를 곱해. 여기서는 표기를 간결하게 유지하려고 전이 인덱스를 생략했지만, 실제 SDP에서는 각 $k$마다 서로 독립적인 multiplier들을 선택해.
+논문 Appendix E.7과 같이 각 constraint에는 $\lambda_{p,q}\ge0$를 곱해. 실제 SDP에서는 각 전이 $k$마다 서로 독립적인 multiplier들을 선택해.
 
 출처: 논문 Appendix D.4의 식 (19), Appendix E.7 및 첨부된 SGD 실험 사양서 §4.
 
@@ -557,11 +536,9 @@ $$
 
 이것이 SGD에서도 SDP formulation이 가능한 핵심이야.
 
-## 5. Lagrangian → Linear equality + LMI
+## 5. 가중합에서 Linear equality와 LMI로
 
 Appendix E.7, p.49
-
-앞서 GD에서 한 것을 그대로 확장해 보자.
 
 ### 5.1. 우리가 원하는 조건
 
@@ -569,89 +546,58 @@ $$
 \mathbb E_i[\phi_{k+1}^f]-\phi_k^f-e_k\sigma^2\le0.
 $$
 
-따라서
+가능한 $G,F$는 $G\succeq0$, §4.1의 모든 interpolation 부등식, 그리고 $\operatorname{Tr}(GA_{\mathrm{var}})\le\sigma^2$를 만족해. 이 조건 아래에서 위 식의 좌변이 항상 0 이하임을 보이면 돼.
+
+### 5.2. 비음수 가중합을 더하기
+
+Appendix E.7에서는 interpolation 부등식에 $\lambda_{p,q}\ge0$을 곱하고, 분산 부등식에는 오차 계수와 같은 $e_k\ge0$을 곱해. 이를 원하는 부등식의 좌변에 더하면
 
 $$
-\boxed{ \sup_{\substack{ G\succeq0\\ I_{p,q}(G,F)\ge0\\ \operatorname{Tr}(GA_{\mathrm{var}})\le\sigma^2 }} \left\{ \Delta\phi_k(G,F)-e_k\sigma^2 \right\} \le0 }
+\begin{aligned}
+&\mathbb E_i[\phi_{k+1}^f]-\phi_k^f-e_k\sigma^2\\
+&\quad+\sum_{p,q\in I}\lambda_{p,q}
+\left[F(\mathbf f_p-\mathbf f_q)+\operatorname{Tr}(GM_{p,q})\right]\\
+&\quad+e_k\left[\sigma^2-\operatorname{Tr}(GA_{\mathrm{var}})\right]\\
+&=\operatorname{Tr}\!\left[
+G\left(\frac1n\sum_{i=1}^nV_{k+1}^{(i)}-V_k-e_kA_{\mathrm{var}}
++\sum_{p,q\in I}\lambda_{p,q}M_{p,q}\right)\right]\\
+&\quad+F\left[\frac{d_{k+1}}n\sum_{i=1}^n\mathbf f_i-d_k\mathbf f_0
++\sum_{p,q\in I}\lambda_{p,q}(\mathbf f_p-\mathbf f_q)\right].
+\end{aligned}
 $$
 
-를 확인하면 돼.
+두 $\sigma^2$ 항은 소거돼. 원래 조건을 만족하는 $G,F$에서는 더한 항들이 모두 비음수이므로, 이 가중합을 모든 $G\succeq0,F$에 대해 0 이하로 만들면 원하는 potential inequality가 성립해.
 
-### 5.2. Lagrangian 구성
-
-Variance constraint를 다음과 같이 쓰자.
-
-$$
-I_{\mathrm{var}}(G) =\sigma^2-\operatorname{Tr}(GA_{\mathrm{var}})\ge0.
-$$
-
-Appendix E.7의 인증 조건에서는 variance의 multiplier를 potential inequality의 오차 계수와 같은 $e_k$로 선택하고 $e_k\ge0$을 요구해. 따라서 interpolation에 $\lambda_{p,q}\ge0$, variance에 $e_k\ge0$을 곱하여 다음 Lagrangian을 구성해.
-
-$$
-\begin{aligned} \mathcal L_k ={}&\Delta\phi_k(G,F)-e_k\sigma^2\\ &+\sum_{p,q\in\mathcal I_k} \lambda_{p,q}I_{p,q}(G,F)\\ &+e_k I_{\mathrm{var}}(G). \end{aligned}
-$$
-
-원래 제약을 만족하는 $(G,F)$에서는 추가한 항들이 모두 비음수야. 따라서 이 Lagrangian을 모든 $G\succeq0,F$에 대해 0 이하로 만들면, 우리가 원했던 $\Delta\phi_k(G,F)-e_k\sigma^2\le0$도 성립해.
-
-대입해 보면
-
-$$
--e_k\sigma^2+e_k\sigma^2=0
-$$
-
-으로 상수항이 소거돼.
-
-따라서
-
-$$
-\boxed{ \begin{aligned} \mathcal L_k ={}&\operatorname{Tr}\left[ \left( H_k^{\mathrm{SGD}} -e_kA_{\mathrm{var}} +\sum_{p,q}\lambda_{p,q}M_{p,q} \right)G \right]\\ &+F\left[ \frac{d_{k+1}}n\sum_{i=1}^n\mathbf f_i -d_k\mathbf f_0 +\sum_{p,q}\lambda_{p,q}(\mathbf f_p-\mathbf f_q) \right]. \end{aligned} }
-$$
-
-여기서 $F$는 이미 최적 함수값을 뺀 값들이고 $\mathbf f_\star=0$이야. 또한 $H_k^{\mathrm{SGD}}$는 §3.4에서 정의한 $\frac1n\sum_iV_{k+1}^{(i)}-V_k$이므로 위 식은 일반 $n$에서 성립해.
-
-GD에서 유도했던 Lagrangian과 비교하면
-
-$$
-\boxed{-e_kA_{\mathrm{var}}}
-$$
-
-항 하나가 추가된 것을 알 수 있어.
+여기서 $V_k,V_{k+1}^{(i)}$는 §3.4에서 정의한 논문의 potential 행렬이고, $M_{p,q}$는 §4.1의 interpolation 행렬이야. GD의 행렬 조건에 추가된 항은 $-e_kA_{\mathrm{var}}$야.
 
 ### 5.3. Linear equality
 
-Interpolation 제약을 Lagrangian에 반영한 뒤에는 $F$를 자유롭게 움직이며 상한을 확인해. 따라서 이전처럼 함수값 계수를 모두 0으로 만들어야 해.
+함수값 벡터 $F$를 자유롭게 움직여도 가중합이 0 이하이려면 그 계수가 0이어야 해.
 
 $$
-\boxed{ \frac{d_{k+1}}n \sum_{i=1}^n(\mathbf f_i-\mathbf f_\star) -d_k(\mathbf f_0-\mathbf f_\star) +\sum_{p,q}\lambda_{p,q} (\mathbf f_p-\mathbf f_q)=0 }
+\boxed{\frac{d_{k+1}}n\sum_{i=1}^n(\mathbf f_i-\mathbf f_\star)
+-d_k(\mathbf f_0-\mathbf f_\star)
++\sum_{p,q\in I}\lambda_{p,q}(\mathbf f_p-\mathbf f_q)=0.}
 $$
 
-$n=2$이면 이는 $F_1,F_2,F_3$의 계수를 소거하는 세 개의 scalar linear equality야.
+$n=2$이면 $F\mathbf f_0,F\mathbf f_1,F\mathbf f_2$에 곱해지는 계수를 소거하는 세 개의 scalar linear equality야.
 
 ### 5.4. LMI
 
-함수값 항을 제거한 뒤 남는 Gram matrix 항이 모든 $G\succeq0$에 대해 0 이하가 되려면
+함수값 항이 소거된 뒤에는 다음 조건을 요구해.
 
 $$
-\boxed{ H_k^{\mathrm{SGD}} -e_kA_{\mathrm{var}} +\sum_{p,q}\lambda_{p,q}M_{p,q} \preceq0 }
+\boxed{\frac1n\sum_{i=1}^nV_{k+1}^{(i)}-V_k-e_kA_{\mathrm{var}}
++\sum_{p,q\in I}\lambda_{p,q}M_{p,q}\preceq0.}
 $$
 
-이면 돼.
+그러면 모든 $G\succeq0$에 대해 남은 trace 항이 0 이하가 돼. 위 선형 등식, LMI, 그리고 $\lambda_{p,q}\ge0$, $e_k\ge0$이 Appendix E.7의 최종 조건이야.
 
-결론적으로 이번 SDP의 조건은 다음과 같아.
+업데이트를 고정했으므로 $V_k,V_{k+1}^{(i)}$는 $Q_k,Q_{k+1}$의 성분에 선형이고, $A_{\mathrm{var}},M_{p,q}$는 상수행렬이야. 따라서 LMI 좌변의 각 성분은 potential 계수와 multiplier에 대해 affine해.
 
-$$
-\boxed{ \begin{gathered} \frac1n\sum_{i=1}^nV_{k+1}^{(i)} -V_k-e_kA_{\mathrm{var}} +\sum_{p,q}\lambda_{p,q}M_{p,q}\preceq0,\\[5pt] \frac{d_{k+1}}n\sum_{i=1}^n (\mathbf f_i-\mathbf f_\star) -d_k(\mathbf f_0-\mathbf f_\star) +\sum_{p,q}\lambda_{p,q} (\mathbf f_p-\mathbf f_q)=0,\\[5pt] \lambda_{p,q}\ge0,\qquad e_k\ge0. \end{gathered} }
-$$
+Figure 2의 설정 $n=2,N=100$에서는 각 전이마다 $5\times5$ LMI 하나가 생겨 총 100개가 되고, 함수값 선형 등식은 총 300개야.
 
-여기서 $V_k,V_{k+1}^{(i)}$는 §3.4에서 정의한 potential의 이차항 행렬이고, $M_{p,q}$는 §4.1에서 구성한 interpolation 행렬이야.
-
-이것이 Appendix E.7의 최종 SDP reformulation이야.
-
-Figure 2의 설정 $n=2,N=100$에서는 각 전이마다 5×5 LMI 하나가 생겨 총 100개가 되고, 함수값 선형 등식은 총 300개야.
-
-한 가지 주의할 점은 $G\succeq0$는 Gram matrix의 조건이고, potential 계수 행렬 $Q_k$에 별도로 $Q_k\succeq0$를 요구하는 것은 아니라는 사실이야.
-
-이는 뒤의 Figure 2에서 음수인 $b_k$가 등장하는 이유와 연결돼.
+$G\succeq0$는 Gram matrix의 조건이고, potential 계수 행렬 $Q_k$에 별도로 $Q_k\succeq0$를 요구하는 것은 아니야. 이는 뒤의 Figure 2에서 음수인 $b_k$가 등장하는 이유와 연결돼.
 
 ## 6. Figure 2 — 수치해에서 계수 수열 발견하기
 
@@ -803,7 +749,7 @@ $$
 다음처럼 정리하면
 
 $$
-C_k:= f(x_k)-f_\star+ \langle f'(x_k),x_\star-x_k\rangle\le0.
+f(x_k)-f_\star+ \langle f'(x_k),x_\star-x_k\rangle\le0.
 $$
 
 (2) Averaged smoothness
@@ -817,20 +763,19 @@ $$
 따라서 이 식의 좌변에서 우변을 빼면
 
 $$
-\begin{aligned} S_k:={}&\mathbb E_i f(x_{k+1}^{(i)})-f(x_k)\\ &-\mathbb E_i\langle f'(x_k),x_{k+1}^{(i)}-x_k\rangle\\ &-\frac L2\mathbb E_i\Vert x_{k+1}^{(i)}-x_k\Vert ^2 \le0. \end{aligned}
+\begin{aligned} {}&\mathbb E_i f(x_{k+1}^{(i)})-f(x_k)\\ &-\mathbb E_i\langle f'(x_k),x_{k+1}^{(i)}-x_k\rangle\\ &-\frac L2\mathbb E_i\Vert x_{k+1}^{(i)}-x_k\Vert ^2 \le0. \end{aligned}
 $$
 
 (3) Bounded variance
 
 $$
 \boxed{
--I_{\mathrm{var}}(G)
-=\mathbb E_i\Vert G(x_k;i)-f'(x_k)\Vert^2-\sigma^2
+\mathbb E_i\Vert G(x_k;i)-f'(x_k)\Vert^2-\sigma^2
 \le0.
 }
 $$
 
-여기서는 §5.2에서 정의한 $I_{\mathrm{var}}(G)$의 부호를 바꿔, 앞의 $C_k,S_k$와 같은 $\le0$ 방향으로 쓰는 거야.
+세 부등식을 모두 좌변이 $\le0$이 되는 방향으로 썼어.
 
 ### 7.3. Multiplier 선택
 
@@ -840,13 +785,7 @@ $$
 \boxed{ \begin{aligned} \lambda_1&=\delta_kL,\\ \lambda_2&=d_{k+1},\\ \lambda_3&=e_k =\frac{L\delta_k^2}{2}(1+d_{k+1}). \end{aligned} }
 $$
 
-이들을 이용해서
-
-$$
-\lambda_1C_k+\lambda_2S_k-\lambda_3I_{\mathrm{var}}(G)\le0
-$$
-
-를 구성하는 거야.
+이 가중치로 앞의 세 부등식의 좌변을 더하면 0 이하야. 다음 절에서 그 가중합을 직접 전개할 거야.
 
 ### 7.4. 가중합 전개
 
@@ -885,7 +824,15 @@ $$
 를 대입하면 정확히 다음 등식을 얻어.
 
 $$
-\boxed{ \begin{aligned} &\lambda_1C_k+\lambda_2S_k-\lambda_3I_{\mathrm{var}}(G)\\ &=\mathbb E_i[\phi_{k+1}^f] -\phi_k^f-e_k\sigma^2\\ &\quad+(\delta_kd_{k+1}-e_k)\Vert f'(x_k)\Vert ^2. \end{aligned} }
+\boxed{\begin{aligned}
+&\lambda_1\left[f(x_k)-f_\star+\langle f'(x_k),x_\star-x_k\rangle\right]\\
+&+\lambda_2\left[\mathbb E_i f(x_{k+1}^{(i)})-f(x_k)
+-\mathbb E_i\langle f'(x_k),x_{k+1}^{(i)}-x_k\rangle
+-\frac L2\mathbb E_i\Vert x_{k+1}^{(i)}-x_k\Vert^2\right]\\
+&+\lambda_3\left[\mathbb E_i\Vert G(x_k;i)-f'(x_k)\Vert^2-\sigma^2\right]\\
+&=\mathbb E_i[\phi_{k+1}^f]-\phi_k^f-e_k\sigma^2
++(\delta_kd_{k+1}-e_k)\Vert f'(x_k)\Vert^2.
+\end{aligned}}
 $$
 
 왼쪽은 세 nonpositive inequality의 nonnegative weighted sum이므로 0 이하야.
@@ -1179,7 +1126,7 @@ $\mathbb E_iG(x;i)=f'(x)$, variance $\le\sigma^2$
 
 Parameterized Potential
 
-$\phi_k^f(a_k,b_k,c_k,d_k)$
+$\phi_k^f=a_k\|x_k-x_\star\|^2+b_k\|f'(x_k)\|^2+2c_k\langle f'(x_k),x_k-x_\star\rangle+d_k(f(x_k)-f_\star)$
 
 Expected Potential Inequality
 
@@ -1187,9 +1134,9 @@ $\mathbb E_i\phi_{k+1}^f-\phi_k^f-e_k\sigma^2\le0$
 
 Gram + Interpolation + Variance
 
-$G\succeq0,\ I_{p,q}\ge0,\ \operatorname{Tr}(GA_{\mathrm{var}})\le\sigma^2$
+$G\succeq0$, §4.1의 interpolation 부등식, $\operatorname{Tr}(GA_{\mathrm{var}})\le\sigma^2$
 
-Lagrangian → LMI
+비음수 가중합 → LMI
 
 함수값 계수 소거 + NSD 행렬 조건
 

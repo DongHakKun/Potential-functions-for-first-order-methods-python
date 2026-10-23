@@ -52,8 +52,7 @@ $$
 \begin{aligned}
 P&=\bigl[x_k-x_\star\quad f'(x_k)\quad f'(x_{k+1})\bigr]
 \in\mathbb R^{d\times3},\\
-F&=(F_1,F_2)
-=\bigl[f(x_k)-f_\star\quad f(x_{k+1})-f_\star\bigr]
+F&=\bigl[f(x_k)-f_\star\quad f(x_{k+1})-f_\star\bigr]
 \in\mathbb R^{1\times2}.
 \end{aligned}
 $$
@@ -118,19 +117,48 @@ $$
 =G_{12}
 $$
 
-이고, 이런 식으로 potential의 모든 이차항을 $G$의 성분에 대한 선형식으로 바꿀 수 있어. 따라서 $\Delta\phi_k=\phi_{k+1}^f-\phi_k^f$는 다음과 같이 쓸 수 있어.
+이고, GD 업데이트를 대입하면 다음 세 항을 얻어.
 
 $$
-\boxed{ \Delta\phi_k(G,F) =\operatorname{Tr}(H_kG) +d_{k+1}F_2-d_kF_1 }
+\begin{aligned}
+\|x_{k+1}-x_\star\|^2&=G_{11}-\frac2L G_{12}+\frac1{L^2}G_{22},\\
+\|f'(x_{k+1})\|^2&=G_{33},\\
+\langle f'(x_{k+1}),x_{k+1}-x_\star\rangle&=G_{13}-\frac1L G_{23}.
+\end{aligned}
 $$
 
-여기서
+Appendix D.4, p.36의 표기를 그대로 사용하면 potential의 이차항 계수행렬은
 
 $$
-H_k= \begin{pmatrix} a_{k+1}-a_k& -\frac{a_{k+1}}L-c_k& c_{k+1}\\ -\frac{a_{k+1}}L-c_k& \frac{a_{k+1}}{L^2}-b_k& -\frac{c_{k+1}}L\\ c_{k+1}&-\frac{c_{k+1}}L&b_{k+1} \end{pmatrix}.
+\begin{aligned}
+V_k&=[\mathbf x_k-\mathbf x_\star\quad\mathbf g_k]
+\begin{pmatrix}a_k&c_k\\c_k&b_k\end{pmatrix}
+[\mathbf x_k-\mathbf x_\star\quad\mathbf g_k]^\top,\\
+V_{k+1}&=[\mathbf x_{k+1}-\mathbf x_\star\quad\mathbf g_{k+1}]
+\begin{pmatrix}a_{k+1}&c_{k+1}\\c_{k+1}&b_{k+1}\end{pmatrix}
+[\mathbf x_{k+1}-\mathbf x_\star\quad\mathbf g_{k+1}]^\top.
+\end{aligned}
 $$
 
-가 돼. $H_k$에는 현재와 다음 potential의 계수가 함께 들어가고, GD의 고정 step-size $1/L$가 반영되어 있어.
+따라서 위의 세 항을 전개하면
+
+$$
+V_{k+1}-V_k=
+\begin{pmatrix}
+a_{k+1}-a_k&-a_{k+1}/L-c_k&c_{k+1}\\
+-a_{k+1}/L-c_k&a_{k+1}/L^2-b_k&-c_{k+1}/L\\
+c_{k+1}&-c_{k+1}/L&b_{k+1}
+\end{pmatrix},
+$$
+
+$$
+\boxed{\phi_{k+1}^f-\phi_k^f
+=\operatorname{Tr}\bigl(G(V_{k+1}-V_k)\bigr)
++F\bigl[d_{k+1}(\mathbf f_{k+1}-\mathbf f_\star)
+-d_k(\mathbf f_k-\mathbf f_\star)\bigr].}
+$$
+
+Potential 계수를 고정하면 이 차이는 $G$와 $F$에 대한 선형식이야. 반대로 $L$과 업데이트를 고정하면 $V_{k+1}-V_k$의 각 성분이 미지의 potential 계수에 대한 선형식이야.
 
 출처: 논문 Appendix D.4, pp.35–36; 첨부 GD 실험 사양서 `3_2_1_Figure_1_1A_GradientDescent.md`의 §3 「Finite-dimensional Gram representation」와 §5. 이후에는 이 파일을 「GD 실험 사양서」라고 부를게.
 
@@ -143,15 +171,16 @@ $$
 논문의 실제 SDP는
 
 $$
-\mathcal I_k=\{\star,k,k+1\}
+I_k=\{\star,k,k+1\}
 $$
 
 의 세 점을 사용해.
 
-각 순서쌍 $p,q\in\mathcal I_k$에 대해
+각 순서쌍 $p,q\inI_k$에 대해
 
 $$
-\begin{aligned} I_{p,q}(G,F) ={}&f(x_p)-f(x_q)\\ &-\langle f'(x_q),x_p-x_q\rangle\\ &-\frac1{2L}\Vert f'(x_p)-f'(x_q)\Vert ^2 \ge0. \end{aligned}
+f(x_p)-f(x_q)-\langle f'(x_q),x_p-x_q\rangle
+-\frac1{2L}\|f'(x_p)-f'(x_q)\|^2\ge0.
 $$
 
 서로 다른 순서쌍은 총 6개야. 각 부등식에 독립적인 multiplier $\lambda_{p,q}\ge0$를 부여해. 여기서 $\lambda_{p,q}$는 현재 전이 $k\to k+1$에서 사용하는 값이며, 단계 의존성은 표기에서 생략했어. 전체 SDP에서는 각 전이의 multiplier를 따로 선택해.
@@ -181,7 +210,7 @@ $$
 이렇게 구성하면
 
 $$
-I_{p,q}(G,F) =F(\mathbf f_p-\mathbf f_q)+\operatorname{Tr}(GM_{p,q}).
+F(\mathbf f_p-\mathbf f_q)+\operatorname{Tr}(GM_{p,q})\ge0.
 $$
 
 이 식의 trace 항은 정확히
@@ -196,42 +225,39 @@ $$
 
 출처: 논문 Appendix D.4, 식 (19), p.35; 첨부 GD 실험 사양서 §4 「Interpolation matrices + multipliers」.
 
-### 2.2. Lagrangian 완성
+### 2.2. 비음수 가중합을 전개
 
-Potential difference에 이 여섯 제약의 비음수 가중합을 더하면
-
-$$
-\begin{aligned} \mathcal L_k(G,F,\lambda) ={}&\Delta\phi_k(G,F)\\ &+\sum_{p,q\in\mathcal I_k} \lambda_{p,q}I_{p,q}(G,F). \end{aligned}
-$$
-
-대입하고 정리하면
+Potential 차이에 여섯 interpolation 부등식의 비음수 가중합을 더하면
 
 $$
-\boxed{ \begin{aligned} \mathcal L_k ={}&\operatorname{Tr}\left[ \left(H_k+\sum_{p,q}\lambda_{p,q}M_{p,q}\right)G \right]\\ &+F\left[ -d_k\mathbf f_k+d_{k+1}\mathbf f_{k+1} +\sum_{p,q}\lambda_{p,q} (\mathbf f_p-\mathbf f_q) \right]. \end{aligned} }
+\begin{aligned}
+&\phi_{k+1}^f-\phi_k^f
++\sum_{p,q\inI_k}\lambda_{p,q}
+\bigl[F(\mathbf f_p-\mathbf f_q)+\operatorname{Tr}(GM_{p,q})\bigr]\\
+&\quad=\operatorname{Tr}\left[G\left(V_{k+1}-V_k+
+\sum_{p,q\inI_k}\lambda_{p,q}M_{p,q}\right)\right]\\
+&\qquad+F\left[d_{k+1}(\mathbf f_{k+1}-\mathbf f_\star)
+-d_k(\mathbf f_k-\mathbf f_\star)
++\sum_{p,q\inI_k}\lambda_{p,q}(\mathbf f_p-\mathbf f_q)\right].
+\end{aligned}
 $$
 
-이것이 §3.2.1에서 실제로 사용할 Lagrangian이야.
+이것이 한 단계 potential 감소를 검증할 때 사용하는 가중합이야.
 
 ### 2.3. 왜 선형 등식과 LMI가 나오는가?
 
-Interpolation constraint를 만족하는 $G,F$에서는 $\lambda_{p,q}\ge0$에 의해 $\Delta\phi_k\le\mathcal L_k$가 성립해. 따라서 함수 클래스의 제약을 가중합에 넣은 뒤, 남은 모든 $G\succeq0$와 $F$에 대해 $\mathcal L_k\le0$임을 보이면 potential 감소를 보장할 수 있어. 이를 하나의 조건으로 쓰면
-
-$$
-\sup_{G\succeq0,\ F\in\mathbb R^{1\times2}} \mathcal L_k(G,F,\lambda)\le0
-$$
-
-이야. 우리는 이 조건을 만족하는 nonnegative multiplier를 찾는 것이야.
+Interpolation 부등식을 만족하는 $G,F$에서는 추가한 항들이 모두 비음수야. 따라서 위에 전개한 식을 모든 $G\succeq0$와 제한 없는 $F\in\mathbb R^{1\times2}$에 대해 0 이하로 만들면 $\phi_{k+1}^f-\phi_k^f\le0$을 보장할 수 있어.
 
 여기서 $G$와 $F$를 나누어 보면 조건이 명확해져.
 
 첫 번째: $F$에 대한 조건
 
-$F$는 제한 없는 함수값 변수이므로 그 계수가 0이 아니면 Lagrangian을 무한히 크게 만들 수 있어.
+$F$는 이 조건에서 제한 없는 함수값 변수이므로 그 계수가 0이 아니면 위 가중합을 무한히 크게 만들 수 있어.
 
 따라서
 
 $$
-\boxed{ -d_k\mathbf f_k+d_{k+1}\mathbf f_{k+1} +\sum_{p,q}\lambda_{p,q} (\mathbf f_p-\mathbf f_q)=0 }
+\boxed{ d_{k+1}(\mathbf f_{k+1}-\mathbf f_\star)-d_k(\mathbf f_k-\mathbf f_\star) +\sum_{p,q}\lambda_{p,q} (\mathbf f_p-\mathbf f_q)=0 }
 $$
 
 이어야 해. 이것이 linear equality constraint야.
@@ -241,7 +267,7 @@ $$
 함수값 항이 제거되면 남는 식은
 
 $$
-\operatorname{Tr}\left[ \left(H_k+\sum_{p,q}\lambda_{p,q}M_{p,q}\right)G \right].
+\operatorname{Tr}\left[ \left(V_{k+1}-V_k+\sum_{p,q}\lambda_{p,q}M_{p,q}\right)G \right].
 $$
 
 우리는 $G\succeq0$인 모든 Gram matrix에 대해 이 값이 0 이하이기를 원해.
@@ -249,15 +275,17 @@ $$
 그러므로
 
 $$
-\boxed{ H_k+\sum_{p,q}\lambda_{p,q}M_{p,q}\preceq0 }
+\boxed{ V_{k+1}-V_k+\sum_{p,q}\lambda_{p,q}M_{p,q}\preceq0 }
 $$
 
 이어야 해. 이것이 **Linear Matrix Inequality (LMI)**야.
 
+$L$과 업데이트를 고정하면 $M_{p,q}$는 상수행렬이고, $V_{k+1}-V_k$의 성분은 potential 계수의 선형식이야. 따라서 위 행렬의 성분은 potential 계수와 $\lambda_{p,q}$에 대해 선형이고, 일부 계수를 경계조건으로 고정하면 상수항을 포함하는 affine 식이 돼.
+
 따라서 한 단계 potential inequality에 대한 SDP 조건은 다음 세 가지로 정리돼.
 
 $$
-\boxed{ \begin{gathered} H_k+\sum_{p,q\in\mathcal I_k} \lambda_{p,q}M_{p,q}\preceq0, \\[5pt] -d_k\mathbf f_k+d_{k+1}\mathbf f_{k+1} +\sum_{p,q\in\mathcal I_k} \lambda_{p,q}(\mathbf f_p-\mathbf f_q)=0, \\[5pt] \lambda_{p,q}\ge0. \end{gathered} }
+\boxed{ \begin{gathered} V_{k+1}-V_k+\sum_{p,q\inI_k} \lambda_{p,q}M_{p,q}\preceq0, \\[5pt] d_{k+1}(\mathbf f_{k+1}-\mathbf f_\star)-d_k(\mathbf f_k-\mathbf f_\star) +\sum_{p,q\inI_k} \lambda_{p,q}(\mathbf f_p-\mathbf f_q)=0, \\[5pt] \lambda_{p,q}\ge0. \end{gathered} }
 $$
 
 이 세 조건이 논문 Appendix D.4, p.36의 최종 LMI formulation에 해당해. 논문은 이 경우의 reformulation을 lossless한 것으로 제시하고 있어.
@@ -340,16 +368,16 @@ $$
 
 | 수식 | Python 표현 | 의미 |
 | --- | --- | --- |
-| $Q_k=\begin{pmatrix}a_k&c_k\\c_k&b_k\end{pmatrix}$ | `Q[k+1]` | Potential 이차항의 $2\times2$ 대칭 계수 행렬 |
+| $\begin{pmatrix}a_k&c_k\\c_k&b_k\end{pmatrix}$ | `Q[k+1]` | Potential 이차항의 $2\times2$ 대칭 계수 행렬 |
 | $d_k$ | `d[k+1]` | 함수값 차이의 계수 |
 | $b_N$ | `tau`, `bN` | 최대화하는 최종 gradient norm 제곱의 계수 |
 | $\lambda_{p,q}$ | `lam[k+1][i-1,j-1]` | 전이 $k\to k+1$의 interpolation multiplier |
-| $H_k+\sum_{p,q}\lambda_{p,q}M_{p,q}$ | `cons_SDP[k+1]` | `<< 0`으로 제한하는 LMI의 좌변 |
+| $V_{k+1}-V_k+\sum_{p,q}\lambda_{p,q}M_{p,q}$ | `cons_SDP[k+1]` | `<< 0`으로 제한하는 LMI의 좌변 |
 | §2.3의 함수값 계수벡터 | `cons_LIN[k+1].T` | 0으로 두는 선형 등식의 좌변 |
 
 코드의 점 번호 `1, 2, 3`은 각각 $\star,k,k+1$에 대응해. 수식의 계수벡터는 열벡터이고 코드의 `xk`, `gxk`, `fxk` 등은 행벡터라서, 예를 들어 $\mathbf x_k$는 `xk.T`에 대응해. 또한 코드의 `G`, `F`는 gradient·함수값 계수벡터를 담은 딕셔너리이므로, 여기서 정의한 Gram matrix $G$ 및 함수값 행렬 $F$와 구별해서 읽으면 돼.
 
-코드는 $G$를 결정변수로 선언하는 대신 §2의 조건을 사용해 potential 계수와 multiplier를 구해. $Q_k$에는 대칭 조건을 두며 별도의 $Q_k\succeq0$ 제약은 두지 않아. 모든 전이의 조건을 하나로 모아 `tau`를 최대화하고, $N=100$이면 $3\times3$ LMI 100개와 함수값에 대한 scalar equality 200개가 생겨.
+코드는 $G$를 결정변수로 선언하는 대신 §2의 조건을 사용해 potential 계수와 multiplier를 구해. `Q[k+1]`에는 대칭 조건을 두며 별도의 PSD 제약은 두지 않아. 모든 전이의 조건을 하나로 모아 `tau`를 최대화하고, $N=100$이면 $3\times3$ LMI 100개와 함수값에 대한 scalar equality 200개가 생겨.
 
 출처: 첨부 GD 실험 사양서 §1, §3, §5–6. 이 대응표는 논문의 Appendix D.4 조건이 코드에서 어디에 구성되는지 연결한 것이야.
 
@@ -473,10 +501,10 @@ $$
 a_k=a_{k+1}=L^2,\qquad c_k=c_{k+1}=0
 $$
 
-으로 고정했으므로, 앞서 구한 $H_k$는
+으로 고정했으므로, 앞서 구한 $V_{k+1}-V_k$는
 
 $$
-H_k= \begin{pmatrix} 0&-L&0\\ -L&1-b_k&0\\ 0&0&b_{k+1} \end{pmatrix}
+V_{k+1}-V_k= \begin{pmatrix} 0&-L&0\\ -L&1-b_k&0\\ 0&0&b_{k+1} \end{pmatrix}
 $$
 
 로 단순해져.
@@ -484,7 +512,7 @@ $$
 따라서
 
 $$
-\boxed{ \begin{aligned} \Delta\phi_k(G,F) ={}&d_{k+1}F_2-d_kF_1\\ &-2LG_{12}+(1-b_k)G_{22} +b_{k+1}G_{33}. \end{aligned} }
+\boxed{ \begin{aligned} \phi_{k+1}^f-\phi_k^f ={}&d_{k+1}(f(x_{k+1})-f_\star)-d_k(f(x_k)-f_\star)\\ &-2LG_{12}+(1-b_k)G_{22} +b_{k+1}G_{33}. \end{aligned} }
 $$
 
 이제 interpolation inequality를 더해서 이 값이 0 이하임을 증명하면 돼.
@@ -496,7 +524,14 @@ $$
 GD 업데이트를 대입하면 다음과 같이 정리할 수 있어.
 
 $$
-\begin{aligned} I_{\star,k} &=-F_1+G_{12}-\frac{G_{22}}{2L}\ge0, \\[5pt] I_{k,k+1} &=F_1-F_2-\frac{G_{22}+G_{33}}{2L}\ge0, \\[5pt] I_{k+1,k} &=F_2-F_1+\frac{G_{22}+2G_{23}-G_{33}}{2L}\ge0. \end{aligned}
+\begin{aligned}
+F(\mathbf f_\star-\mathbf f_k)+\operatorname{Tr}(GM_{\star,k})
+&=-(f(x_k)-f_\star)+G_{12}-\frac{G_{22}}{2L}\ge0,\\
+F(\mathbf f_k-\mathbf f_{k+1})+\operatorname{Tr}(GM_{k,k+1})
+&=f(x_k)-f(x_{k+1})-\frac{G_{22}+G_{33}}{2L}\ge0,\\
+F(\mathbf f_{k+1}-\mathbf f_k)+\operatorname{Tr}(GM_{k+1,k})
+&=f(x_{k+1})-f(x_k)+\frac{G_{22}+2G_{23}-G_{33}}{2L}\ge0.
+\end{aligned}
 $$
 
 각각 $x_\star,x_k$, $x_k,x_{k+1}$, $x_{k+1},x_k$에 해당하는 interpolation inequality야.
@@ -513,11 +548,7 @@ $$
 
 $b_k,d_k\ge0$이므로 세 multiplier는 모두 nonnegative야.
 
-이제 다음 Lagrangian을 생각하자.
-
-$$
-\mathcal L_k =\Delta\phi_k +\lambda_{\star,k}I_{\star,k} +\lambda_{k,k+1}I_{k,k+1} +\lambda_{k+1,k}I_{k+1,k}.
-$$
+이 세 multiplier를 §2의 가중합에 대입하자.
 
 첫 번째: 함수값 계수의 소거
 
@@ -548,7 +579,7 @@ $$
 그러면 직접 행렬을 전개했을 때
 
 $$
-\boxed{ \begin{aligned} &H_k+\lambda_{\star,k}M_{\star,k} +\lambda_{k,k+1}M_{k,k+1} +\lambda_{k+1,k}M_{k+1,k}\\ &\quad=-\frac{\lambda_{k+1,k}}{2L} \begin{pmatrix} 0&0&0\\ 0&1&-1\\ 0&-1&1 \end{pmatrix} \preceq0. \end{aligned} }
+\boxed{ \begin{aligned} &V_{k+1}-V_k+\lambda_{\star,k}M_{\star,k} +\lambda_{k,k+1}M_{k,k+1} +\lambda_{k+1,k}M_{k+1,k}\\ &\quad=-\frac{\lambda_{k+1,k}}{2L} \begin{pmatrix} 0&0&0\\ 0&1&-1\\ 0&-1&1 \end{pmatrix} \preceq0. \end{aligned} }
 $$
 
 이것이 실제로 Theorem 3의 계수들이 LMI를 만족한다는 해석적 certificate야.
@@ -563,16 +594,24 @@ $$
 
 즉, 앞서 유도한 두 SDP 조건을 모두 만족했어.
 
-따라서
+따라서 위 가중합의 행렬항은
 
 $$
-\begin{aligned} \mathcal L_k &=-\frac{\lambda_{k+1,k}}{2L} \Vert f'(x_{k+1})-f'(x_k)\Vert ^2\\ &\le0. \end{aligned}
+\operatorname{Tr}\left[G\left(V_{k+1}-V_k
++\lambda_{\star,k}M_{\star,k}
++\lambda_{k,k+1}M_{k,k+1}
++\lambda_{k+1,k}M_{k+1,k}\right)\right]
+=-\frac{\lambda_{k+1,k}}{2L}\|f'(x_{k+1})-f'(x_k)\|^2\le0.
 $$
 
-그런데 interpolation inequality는 모두 비음수이고 multiplier도 비음수이므로
+함수값 계수는 소거되었고, 더한 interpolation 부등식의 좌변과 multiplier는 모두 비음수이므로
 
 $$
-\Delta\phi_k \le\mathcal L_k \le0.
+\phi_{k+1}^f-\phi_k^f
+\le\operatorname{Tr}\left[G\left(V_{k+1}-V_k
++\lambda_{\star,k}M_{\star,k}
++\lambda_{k,k+1}M_{k,k+1}
++\lambda_{k+1,k}M_{k+1,k}\right)\right]\le0.
 $$
 
 결론적으로
@@ -689,7 +728,7 @@ $\phi_{k+1}^f-\phi_k^f\le0$
 
 Gram Representation + Interpolation
 
-$G\succeq0,\quad I_{p,q}\ge0$
+$G\succeq0,\quad F(\mathbf f_p-\mathbf f_q)+\operatorname{Tr}(GM_{p,q})\ge0$
 
 Lagrangian → LMI
 
