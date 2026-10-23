@@ -4,7 +4,7 @@
 
 수식에서 상태의 인덱스는 $k=0,\ldots,N$, 한 단계 전이의 인덱스는 $k=0,\ldots,N-1$로 둔다. Python 딕셔너리는 1부터 시작하므로 $Q_k,d_k$는 `Q[k+1]`, `d[k+1]`에, $e_k,\lambda$는 `e[k+1]`, `lam[k+1]`에 대응한다. 코드 블록의 루프 변수 `k`는 원본대로 `1,...,N`을 사용한다.
 
-최적점과 최적 함수값은 $x_\star,f_\star$, gradient는 $f'(x)$로 쓴다. Gram 표현에는 Appendix E.7의 $\mathbf x_0,\mathbf x_i,\mathbf g_0,\mathbf g_i,\mathbf f_0,\mathbf f_i$를 그대로 사용한다. 여기서 $0,i$는 한 전이 안의 점 번호이며, 알고리즘의 단계 $k$와 구분한다. 표준기저는 $\mathbf e_j$로 쓴다.
+최적점과 최적 함수값은 $x_\star,f_\star$, gradient는 $f'(x)$로 쓴다. Gram 표현에는 Appendix E.7의 $\mathbf x_0,\mathbf x_i,\mathbf g_0,\mathbf g_i,\mathbf f_0,\mathbf f_i$를 그대로 사용한다. 여기서 $0,i$는 한 전이 안의 점 번호이며, 알고리즘의 단계 $k$와 구분한다.
 
 1–5단계에서는 potential과 한 단계 LMI를 설명한다. 6단계에서 이를 CVXPY로 구현하고, 7–9단계에서 최적화 결과를 읽어 그래프와 저장 데이터로 확인한다.
 
@@ -142,19 +142,39 @@ dimF = n + 1
 nbPts = 2 + n
 ```
 
-논문의 벡터는 다음과 같다.
+기본 설정 $n=2$에서 각 열을 고르는 계수벡터를 성분으로 쓰면 다음과 같다.
 
 $$
 \begin{aligned}
-\mathbf x_0&=\mathbf e_1,&\mathbf G_i&=\mathbf e_{1+i},&
-\mathbf g_0&=\frac1n\sum_{i=1}^n\mathbf G_i,\\
-\mathbf x_i&=\mathbf x_0-\delta_k\mathbf G_i,&
-\mathbf g_i&=\mathbf e_{1+n+i},&
-\mathbf f_0&=\mathbf e_1,\quad\mathbf f_i=\mathbf e_{1+i}.
+\mathbf x_0&=\begin{pmatrix}1\\0\\0\\0\\0\end{pmatrix},&
+\mathbf G_1&=\begin{pmatrix}0\\1\\0\\0\\0\end{pmatrix},&
+\mathbf G_2&=\begin{pmatrix}0\\0\\1\\0\\0\end{pmatrix},\\
+\mathbf g_0&=\begin{pmatrix}0\\1/2\\1/2\\0\\0\end{pmatrix},&
+\mathbf g_1&=\begin{pmatrix}0\\0\\0\\1\\0\end{pmatrix},&
+\mathbf g_2&=\begin{pmatrix}0\\0\\0\\0\\1\end{pmatrix},\\
+\mathbf f_0&=\begin{pmatrix}1\\0\\0\end{pmatrix},&
+\mathbf f_1&=\begin{pmatrix}0\\1\\0\end{pmatrix},&
+\mathbf f_2&=\begin{pmatrix}0\\0\\1\end{pmatrix}.
 \end{aligned}
 $$
 
-점·gradient의 벡터는 $\mathbb R^{1+2n}$에, 함수값의 벡터는 $\mathbb R^{1+n}$에 속한다. 최적점에 해당하는 벡터는 모두 0이다.
+일반적인 $n$에서는 $\mathbf x_0$의 첫 번째 성분, $\mathbf G_i$의 $1+i$번째 성분, $\mathbf g_i$의 $1+n+i$번째 성분을 각각 1로 두고 나머지는 0으로 둔다. 함수값의 계수벡터 $\mathbf f_0,\mathbf f_i$도 각각 첫 번째와 $1+i$번째 성분만 1이다. 현재 gradient와 다음 점의 계수벡터는
+
+$$
+\mathbf g_0=\frac1n\sum_{i=1}^n\mathbf G_i,\qquad
+\mathbf x_i=\mathbf x_0-\delta_k\mathbf G_i
+$$
+
+로 얻는다. $n=2$의 다음 점을 성분으로 쓰면
+
+$$
+\begin{aligned}
+\mathbf x_1&=\begin{pmatrix}1\\-\delta_k\\0\\0\\0\end{pmatrix},&
+\mathbf x_2&=\begin{pmatrix}1\\0\\-\delta_k\\0\\0\end{pmatrix}
+\end{aligned}
+$$
+
+이다. 점·gradient의 계수벡터는 $\mathbb R^{1+2n}$에, 함수값의 계수벡터는 $\mathbb R^{1+n}$에 속한다. 최적점에 해당하는 벡터는 모두 0이다.
 
 | Appendix E.7의 기호 | Python 표현 | 나타내는 값 |
 | --- | --- | --- |
@@ -239,7 +259,16 @@ A_{\mathrm{var}}=\frac1n\sum_{i=1}^n
 \qquad \operatorname{Tr}(GA_{\mathrm{var}})\le\sigma^2.
 $$
 
-$n=2$에서는 $A_{\mathrm{var}}=\frac14(\mathbf e_2-\mathbf e_3)(\mathbf e_2-\mathbf e_3)^\top\in\mathbb S_+^5$이다. 코드의 `Avar`가 이 행렬이며, `e[k] >= 0`인 계수를 곱해 제약에 반영한다.
+$n=2$에서는 다음과 같다.
+
+$$
+A_{\mathrm{var}}=\frac14
+\begin{pmatrix}0\\1\\-1\\0\\0\end{pmatrix}
+\begin{pmatrix}0\\1\\-1\\0\\0\end{pmatrix}^{\!\top}
+\in\mathbb S_+^5.
+$$
+
+코드의 `Avar`가 이 행렬이며, `e[k] >= 0`인 계수를 곱해 제약에 반영한다.
 
 ## 5. Linear equality + semidefinite inequality
 

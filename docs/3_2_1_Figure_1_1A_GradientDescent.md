@@ -4,7 +4,7 @@
 
 수식의 상태 인덱스는 $k=0,\ldots,N$, 전이 인덱스는 $k=0,\ldots,N-1$이다. Python 딕셔너리의 키와 원본 코드 블록의 반복변수 `k`는 1부터 시작한다. 따라서 $Q_k\leftrightarrow\texttt{Q[k+1]}$, $d_k\leftrightarrow\texttt{d[k+1]}$, $\lambda\leftrightarrow\texttt{lam[k+1]}$로 대응한다. 코드 블록의 식별자는 원본 이름을 유지한다.
 
-수식에서는 점 $x_k$와 gradient $f'(x_k)$를 쓰고, Appendix D.4의 Gram 표현에 사용하는 벡터는 $\mathbf x_k,\mathbf g_k,\mathbf f_k$처럼 굵게 쓴다. 표준기저는 $\mathbf e_j$, 최적점과 최적값은 $x_\star,f_\star$로 쓴다. Interpolation point의 인덱스는 $p,q$로 쓴다. 3–5단계에서는 논문의 Gram 표현과 제약식을 설명하고, 6단계에서 이를 CVXPY로 구현한다.
+수식에서는 점 $x_k$와 gradient $f'(x_k)$를 쓰고, Appendix D.4의 Gram 표현에 사용하는 계수벡터는 $\mathbf x_k,\mathbf g_k,\mathbf f_k$처럼 굵게 쓴다. 최적점과 최적값은 $x_\star,f_\star$로 쓴다. Interpolation point의 인덱스는 $p,q$로 쓴다. 3–5단계에서는 논문의 Gram 표현과 제약식을 설명하고, 6단계에서 이를 CVXPY로 구현한다.
 
 ## 1. Parameterized Potential
 
@@ -101,15 +101,27 @@ P=[x_k\ f'(x_k)\ f'(x_{k+1})],\quad
 F=[f(x_k)\ f(x_{k+1})],\quad G=P^\top P\in\mathbb S_+^3
 $$
 
-$P\in\mathbb R^{d\times3}$는 세 벡터를 열로 모은 행렬이고, $F\in\mathbb R^{1\times2}$는 두 함수값을 모은 행렬이다. Gram 표현에 사용할 기호를 다음과 같이 둔다.
+$P\in\mathbb R^{d\times3}$는 세 벡터를 열로 모은 행렬이고, $F\in\mathbb R^{1\times2}$는 두 함수값을 모은 행렬이다. $P$와 곱해 각 점과 gradient를 얻는 계수벡터를 다음 열벡터로 둔다.
 
 $$
-\mathbf x_k=\mathbf e_1,\quad \mathbf g_k=\mathbf e_2,\quad
-\mathbf g_{k+1}=\mathbf e_3,\quad
-\mathbf x_{k+1}=\mathbf e_1-L^{-1}\mathbf e_2.
+\mathbf x_k=\begin{pmatrix}1\\0\\0\end{pmatrix},\quad
+\mathbf g_k=\begin{pmatrix}0\\1\\0\end{pmatrix},\quad
+\mathbf g_{k+1}=\begin{pmatrix}0\\0\\1\end{pmatrix},\quad
+\mathbf x_{k+1}=\begin{pmatrix}1\\-L^{-1}\\0\end{pmatrix}.
 $$
 
-예를 들어 $P\mathbf x_k=x_k$이고 $\|x_k\|^2=\operatorname{Tr}(G\mathbf x_k\mathbf x_k^\top)$이다.
+실제로 $P$를 곱하면 다음과 같이 각 열을 고르거나 조합한다.
+
+$$
+\begin{aligned}
+P\begin{pmatrix}1\\0\\0\end{pmatrix}&=x_k,&
+P\begin{pmatrix}0\\1\\0\end{pmatrix}&=f'(x_k),\\
+P\begin{pmatrix}0\\0\\1\end{pmatrix}&=f'(x_{k+1}),&
+P\begin{pmatrix}1\\-L^{-1}\\0\end{pmatrix}&=x_k-L^{-1}f'(x_k)=x_{k+1}.
+\end{aligned}
+$$
+
+따라서 $\|x_k\|^2=\|P\mathbf x_k\|^2=\mathbf x_k^\top G\mathbf x_k=\operatorname{Tr}(G\mathbf x_k\mathbf x_k^\top)$이다.
 
 ```python
 dimG = 3
