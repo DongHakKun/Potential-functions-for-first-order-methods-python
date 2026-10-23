@@ -10,7 +10,7 @@
 
 ## 1. Parameterized Potential
 
-각 전이의 outcome $i\in\{1,\ldots,n\}$는 균등분포를 사용한다. 따라서 $\mathbb E_i$는 $1/n$을 곱한 outcome 합으로 구현한다.
+각 전이의 outcome $i\in\{1,\ldots,n\}$는 uniform distribution을 사용한다. 따라서 $\mathbb E_i$는 $1/n$을 곱한 outcome 합으로 구현한다.
 
 $f\in\mathcal F_L$이고, oracle은 unbiased 조건 $\mathbb E_iG(x;i)=f'(x)$와 uniformly bounded variance 조건 $\mathbb E_i\|G(x;i)-f'(x)\|^2\le\sigma^2$를 만족한다고 가정한다. 이 실험에서는 SGD iterate $x_k$와 averaged iterate $z_k$를 함께 다루므로, potential에도 두 점에 관한 항을 둔다.
 
@@ -38,8 +38,8 @@ $$
 
 | `relax` | $Q_k$ | $a'_k$ | $d_k$ |
 | --- | --- | --- | --- |
-| 0 | 대칭 2×2 결정변수 | 결정변수 | 결정변수 |
-| 1 | $0$으로 고정 | $L/2$로 고정 | 결정변수 |
+| 0 | 대칭 2×2 decision variable | decision variable | decision variable |
+| 1 | $0$으로 고정 | $L/2$로 고정 | decision variable |
 
 두 설정 모두 $e_k,\lambda$를 최적화한다. 초기·최종 계수는 2단계에서 지정한다. 이차항을 전개하면 다음과 같다.
 
@@ -76,7 +76,7 @@ zk1 = lambda k: xk1(k) / k + (k - 1) / k * zk
 
 수식의 $\delta_k$는 코드의 `delta(k+1)`에 대응한다. `alpha`를 바꾸면 그 값은 $1/[L(k+2)^\alpha]$가 되므로, 논문과 비교할 때 이 인덱스 차이를 반영한다.
 
-두 iterate가 stochastic outcome에 따라 달라지므로, 한 단계의 potential inequality는 기대값에 대해 쓴다.
+두 iterate가 stochastic outcome에 따라 달라지므로, 한 단계의 potential inequality는 expectation에 대해 쓴다.
 
 $$
 \boxed{\mathbb E_i[\phi_{k+1}^f(x_{k+1}^{(i)},z_{k+1}^{(i)})]
@@ -90,7 +90,7 @@ $$
 | 0 | $0$ | $0$ | $d_N(f(z_N)-f_\star)$ |
 | 1 | $0$ | $L/2$ | $d_N(f(z_N)-f_\star)+(L/2)\|x_N-x_\star\|^2$ |
 
-각 단계의 부등식에 기대값을 취하고 더하면 다음 telescoping 부등식을 얻는다. $a'_N$에는 위 표의 값을 사용한다.
+각 단계의 부등식에 expectation을 취하고 더하면 다음 telescoping 부등식을 얻는다. $a'_N$에는 위 표의 값을 사용한다.
 
 $$
 d_N\mathbb E[f(z_N)-f_\star]
@@ -165,7 +165,7 @@ statesKG = np.column_stack((zk - xs, gzk))
 statesKF = fzk
 ```
 
-Gram matrix 자체를 결정변수로 선언하지 않고, dualization으로 얻은 LMI 조건의 계수를 구한다. 코드의 `G`, `F`는 interpolation용 딕셔너리이며 위 수식의 Gram matrix와 함수값 행렬과 구분한다.
+Gram matrix 자체를 decision variable로 선언하지 않고, dualization으로 얻은 LMI 조건의 계수를 구한다. 코드의 `G`, `F`는 interpolation용 딕셔너리이며 위 수식의 Gram matrix와 함수값 행렬과 구분한다.
 
 ## 4. Interpolation matrices + multipliers
 
@@ -205,7 +205,7 @@ for i in range(1, n + 1):
 
 ## 5. Linear equality + semidefinite inequality
 
-다음 potential의 기대값에서 현재 potential을 빼고, interpolation 부등식과 variance 조건의 가중합을 더한다. 원본 코드의 `cons_SDP[k]`에는 이차항 행렬을, `cons_LIN[k]`에는 함수값에 곱해지는 계수를 모은다.
+다음 potential의 expectation에서 현재 potential을 빼고, interpolation 부등식과 variance 조건의 가중합을 더한다. 원본 코드의 `cons_SDP[k]`에는 이차항 행렬을, `cons_LIN[k]`에는 함수값에 곱해지는 계수를 모은다.
 
 다음 averaged iterate와 SGD iterate의 항은 모두 outcome별로 계산해 평균 낸다. 함수값 계수의 순서는 $f(z_k),f(x_k),f(z_{k+1}^{(1)}),f(z_{k+1}^{(2)})$이다. Potential에는 $f(x_k)$가 없지만 interpolation에는 있으므로 이 함수값의 계수도 소거한다.
 
@@ -217,14 +217,14 @@ $n=2$에서 `cons_SDP[k]`는 7×7 대칭행렬이고 `cons_LIN[k]`는 함수값 
 
 ### objective와 `reoptimize` 분기
 
-모든 `relax`에서 1차 SDP는 $\max d_N$을 푼다. `reoptimize=0`이면 이 해를 사용한다. `reoptimize=1`이면 첫 번째 문제의 목적식 `obj=-tau`에서 얻은 `-float(obj.value)`를 사용해 `tau >= -float(obj.value) - tol_reopt`를 추가하고, 같은 제약 아래에서 `accumulated_ek`를 최소화한다. 기본값은 `reoptimize=1`, `tol_reopt=1e-5`이다. 두 번째 SDP에서는 이 하한을 유지하면서 나머지 potential 계수와 multiplier를 다시 최적화한다.
+모든 `relax`에서 1차 SDP는 $\max d_N$을 푼다. `reoptimize=0`이면 이 해를 사용한다. `reoptimize=1`이면 첫 번째 문제의 objective `obj=-tau`에서 얻은 `-float(obj.value)`를 사용해 `tau >= -float(obj.value) - tol_reopt`를 추가하고, 같은 제약 아래에서 `accumulated_ek`를 최소화한다. 기본값은 `reoptimize=1`, `tol_reopt=1e-5`이다. 두 번째 SDP에서는 이 하한을 유지하면서 나머지 potential 계수와 multiplier를 다시 최적화한다.
 
 | `relax` | 중간 상태 $k=1,\ldots,N-1$ | 최종 potential |
 | --- | --- | --- |
 | 0 | $a_k,b_k,c_k,d_k,a'_k$ 자유 | $d_N(f(z_N)-f_\star)$ |
 | 1 | $Q_k=0,\ a'_k=L/2$, $d_k$ 자유 | $d_N(f(z_N)-f_\star)+(L/2)\|x_N-x_\star\|^2$ |
 
-### 초기·최종 계수 조건을 적용한 뒤 모든 결정변수 선언
+### 초기·최종 계수 조건을 적용한 뒤 모든 decision variable 선언
 
 초기·최종 계수를 먼저 정하고, 중간 계수와 각 전이의 $\lambda,e_k$를 선언한다. 중간 계수를 생성하는 루프는 $k=1,\ldots,N-1$만 다룬다.
 
@@ -315,7 +315,7 @@ obj = -tau
 
 ### 문제 규모
 
-$N=100,n=2$에서 7×7 NSD LMI는 100개이고, 함수값 계수의 scalar 등식은 $4\times100=400$개이다. 설정별 독립 scalar 결정변수 수는 다음과 같다.
+$N=100,n=2$에서 7×7 NSD LMI는 100개이고, 함수값 계수의 scalar 등식은 $4\times100=400$개이다. 설정별 독립 scalar decision variable 수는 다음과 같다.
 
 | `relax` | 중간 $Q_k$ | 중간 $d_k$ | 중간 $a'_k$ | $\lambda$ | $e_k$ | $d_N$ | 합계 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -369,7 +369,7 @@ if reoptimize:
 
 ## 8. Optimal coefficients / algorithm parameters
 
-`reoptimize=0`이면 1차 해, `reoptimize=1`이면 2차 해를 최종 해로 사용한다. 원본과 같이 `pplot=1`인 실행에서 아래 계수 추출을 수행한다. `pplot=0`이면 배열 추출과 9단계의 그림·파일 출력을 생략한다. 자유변수는 `.value`를 읽고, 고정 계수는 상수 자체를 읽는다. Multiplier는 최종 `lam[k].value`에 있으며 저장 열에는 포함하지 않는다.
+`reoptimize=0`이면 1차 해, `reoptimize=1`이면 2차 해를 최종 해로 사용한다. 원본과 같이 `pplot=1`인 실행에서 아래 계수 추출을 수행한다. `pplot=0`이면 배열 추출과 9단계의 그림·파일 출력을 생략한다. free variable은 `.value`를 읽고, 고정 계수는 상수 자체를 읽는다. Multiplier는 최종 `lam[k].value`에 있으며 저장 열에는 포함하지 않는다.
 
 ```python
 if pplot:
@@ -408,7 +408,7 @@ if pplot:
 | 1 | 0 | 계수 배열 추출과 plotting 수행, 파일 저장 생략 |
 | 1 | 1 | 계수 배열 추출, plotting, 파일 저장 수행 |
 
-각 `relax` 값에 대해 SDP를 따로 푼다. 결과를 함께 보관하려면 `folder` 또는 `nname`을 다르게 설정한다. `relax` 값을 바꾸면 초기·최종 계수 조건과 결정변수도 다시 구성한다.
+각 `relax` 값에 대해 SDP를 따로 푼다. 결과를 함께 보관하려면 `folder` 또는 `nname`을 다르게 설정한다. `relax` 값을 바꾸면 초기·최종 계수 조건과 decision variable도 다시 구성한다.
 
 ### 계수 출력과 저장
 

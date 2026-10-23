@@ -10,7 +10,7 @@
 
 ## 1. Parameterized Potential
 
-각 전이의 outcome $i\in\{1,\ldots,n\}$는 균등분포를 사용한다. 따라서 $\mathbb E_i$는 $1/n$을 곱한 outcome 합으로 구현한다.
+각 전이의 outcome $i\in\{1,\ldots,n\}$는 uniform distribution을 사용한다. 따라서 $\mathbb E_i$는 $1/n$을 곱한 outcome 합으로 구현한다.
 
 $f\in\mathcal F_L$이고 oracle $G(y;i)$가
 
@@ -44,10 +44,10 @@ $$
 
 | `relax` | $Q_k$ | $a'_k$ | $d_k$ |
 | --- | --- | --- | --- |
-| 0 | 대칭 2×2 결정변수 | 결정변수 | $d_0=0$, $d_{k+1}=d_k+\delta_kL$로 고정 |
+| 0 | 대칭 2×2 decision variable | decision variable | $d_0=0$, $d_{k+1}=d_k+\delta_kL$로 고정 |
 | 1 | $0$으로 고정 | $L/2$로 고정 | 같은 recurrence로 고정 |
 
-두 설정 모두 $e_k,\lambda$를 최적화한다. 초기·최종 계수는 2단계에서 지정한다. $d_k$는 recurrence로 정해지므로 결정변수가 아니다. 최종 계수를 최대화하기 위한 `tau`와 2차 최적화용 `reoptimize`도 사용하지 않는다.
+두 설정 모두 $e_k,\lambda$를 최적화한다. 초기·최종 계수는 2단계에서 지정한다. $d_k$는 recurrence로 정해지므로 decision variable이 아니다. 최종 계수를 최대화하기 위한 `tau`와 2차 최적화용 `reoptimize`도 사용하지 않는다.
 
 이차항을 전개하면 $a_k\|y_k-x_\star\|^2+b_k\|f'(y_k)\|^2+2c_k\langle f'(y_k),y_k-x_\star\rangle+a_k'\|x_k-x_\star\|^2$이다. `Q`는 averaged iterate $y_k$와 그 gradient에 관한 계수를 담고, `ap`는 SGD iterate $x_k$의 거리항 계수 $a_k'$를 담는다.
 
@@ -96,7 +96,7 @@ $$
 | 0 | $0$ | $0$ | $d_N(f(y_N)-f_\star)$ |
 | 1 | $0$ | $L/2$ | $d_N(f(y_N)-f_\star)+(L/2)\|x_N-x_\star\|^2$ |
 
-각 단계의 부등식에 기대값을 취하고 더하면 다음 telescoping 부등식을 얻는다. $a'_N$에는 위 표의 값을 사용한다.
+각 단계의 부등식에 expectation을 취하고 더하면 다음 telescoping 부등식을 얻는다. $a'_N$에는 위 표의 값을 사용한다.
 
 $$
 d_N\mathbb E[f(y_N)-f_\star]
@@ -168,7 +168,7 @@ statesKF = fyk
 statesK1F = fyk1
 ```
 
-Gram matrix 자체를 결정변수로 선언하지 않고, dualization으로 얻은 LMI 조건의 계수를 구한다. 코드의 `G`, `F`는 interpolation용 딕셔너리이며 위 수식의 Gram matrix와 함수값 행렬과 구분한다.
+Gram matrix 자체를 decision variable로 선언하지 않고, dualization으로 얻은 LMI 조건의 계수를 구한다. 코드의 `G`, `F`는 interpolation용 딕셔너리이며 위 수식의 Gram matrix와 함수값 행렬과 구분한다.
 
 ## 4. Interpolation matrices + multipliers
 
@@ -208,7 +208,7 @@ for i in range(1, n + 1):
 
 ## 5. Linear equality + semidefinite inequality
 
-다음 potential의 기대값에서 현재 potential을 빼고, interpolation 부등식과 variance 조건의 가중합을 더한다. 원본 코드의 `cons_SDP[k]`에는 이차항 행렬을, `cons_LIN[k]`에는 함수값에 곱해지는 계수를 모은다.
+다음 potential의 expectation에서 현재 potential을 빼고, interpolation 부등식과 variance 조건의 가중합을 더한다. 원본 코드의 `cons_SDP[k]`에는 이차항 행렬을, `cons_LIN[k]`에는 함수값에 곱해지는 계수를 모은다.
 
 $y_{k+1}$에 관한 이차항과 함수값 항은 한 번만 더한다. Outcome에 따라 달라지는 $x_{k+1}^{(i)}$의 거리항만 평균 낸다.
 
@@ -231,7 +231,7 @@ $$
 | 0 | $Q_k,a'_k$ 자유 | $d_{k+1}=d_k+\delta_kL$ | $0$ |
 | 1 | $Q_k=0,\ a'_k=L/2$ | 같은 recurrence | $L/2$ |
 
-### 초기·최종 계수와 고정 수열을 지정한 뒤 결정변수 선언
+### 초기·최종 계수와 고정 수열을 지정한 뒤 decision variable 선언
 
 2단계에서 지정한 초기·최종 계수를 적용하고, $d_0$에서 $d_N$까지 계산한 뒤 중간 계수와 각 전이의 $\lambda,e_k$를 선언한다. `yk1(d[k], k)`의 averaging 계수는 step-size 수열 `delta(1),...,delta(N)`과 그 수열로 먼저 계산한 $d_0,\ldots,d_N$을 대입해 구한다.
 
@@ -309,7 +309,7 @@ for k in range(1, N + 1):
 obj = accumulated_ek
 ```
 
-이 조립 순서에서 모든 제약은 결정변수에 대해 affine이다. $d_k$를 자유변수로 바꾸면 2단계의 averaging 계수와 이 SDP 정의가 달라지므로, 두 `relax` 모두 위의 고정 recurrence를 사용한다.
+이 조립 순서에서 모든 제약은 decision variable에 대해 affine이다. $d_k$를 free variable로 바꾸면 2단계의 averaging 계수와 이 SDP 정의가 달라지므로, 두 `relax` 모두 위의 고정 recurrence를 사용한다.
 
 ### 문제 규모
 
@@ -320,7 +320,7 @@ $N=100,n=2$에서 5×5 NSD LMI는 100개이고, 함수값 계수의 scalar 등�
 | 0 | 297 | 99 | 0 | 900 | 100 | 1396 |
 | 1 | 0 | 0 | 0 | 900 | 100 | 1000 |
 
-`relax=1`의 결정변수는 $\lambda,e$뿐이다. 위 수에는 interpolation 합에 사용하지 않는 `lam`의 대각 원소도 포함한다.
+`relax=1`의 decision variable은 $\lambda,e$뿐이다. 위 수에는 interpolation 합에 사용하지 않는 `lam`의 대각 원소도 포함한다.
 
 ## 7. MOSEK numerical optimization
 
@@ -360,7 +360,7 @@ solve(solverDetails, **solver_opt)
 
 ## 8. Optimal coefficients / algorithm parameters
 
-단일 SDP의 해를 최종 해로 사용한다. 원본과 같이 `pplot=1`인 실행에서 아래 계수 추출을 수행한다. `pplot=0`이면 배열 추출과 9단계의 그림·파일 출력을 생략한다. $a_k,b_k,c_k$는 `Q[k+1]`의 원소에서, $a_k'$와 $e_k$는 각각 `ap[k+1]`, `e[k+1]`에서 읽는다. `d[k+1]`에는 recurrence로 미리 계산한 상수가 들어 있다. 자유변수는 `.value`를 읽고, 고정 계수는 상수 자체를 읽는다.
+단일 SDP의 해를 최종 해로 사용한다. 원본과 같이 `pplot=1`인 실행에서 아래 계수 추출을 수행한다. `pplot=0`이면 배열 추출과 9단계의 그림·파일 출력을 생략한다. $a_k,b_k,c_k$는 `Q[k+1]`의 원소에서, $a_k'$와 $e_k$는 각각 `ap[k+1]`, `e[k+1]`에서 읽는다. `d[k+1]`에는 recurrence로 미리 계산한 상수가 들어 있다. free variable은 `.value`를 읽고, 고정 계수는 상수 자체를 읽는다.
 
 ```python
 if pplot:
@@ -399,7 +399,7 @@ if pplot:
 | 1 | 0 | 계수 배열 추출과 plotting 수행, 파일 저장 생략 |
 | 1 | 1 | 계수 배열 추출, plotting, 파일 저장 수행 |
 
-각 `relax` 값에 대해 SDP를 따로 푼다. 결과를 함께 보관하려면 `folder` 또는 `nname`을 다르게 설정한다. `relax` 값을 바꾸면 초기·최종 계수 조건과 결정변수도 다시 구성한다.
+각 `relax` 값에 대해 SDP를 따로 푼다. 결과를 함께 보관하려면 `folder` 또는 `nname`을 다르게 설정한다. `relax` 값을 바꾸면 초기·최종 계수 조건과 decision variable도 다시 구성한다.
 
 ### 계수 출력과 저장
 

@@ -8,7 +8,7 @@ Potential의 한 단계 감소 조건을 Lagrangian과 LMI로 바꾸는 과정�
 2. §3.2.1 식 (3): 왜 $b_N$을 최대화하는지
 3. Figure 1: SDP 수치해에서 계수 패턴을 발견하는 과정
 4. Theorem 3: 발견한 계수 수열이 실제로 potential inequality를 만족한다는 증명
-5. 최종적으로 gradient norm 제곱의 $O(k^{-2})$ 수렴률 도출
+5. 최종적으로 gradient norm 제곱의 $O(k^{-2})$ convergence rate 도출
 
 ## 1. Potential과 Gram 표현
 
@@ -290,7 +290,7 @@ $$
 
 이 세 조건이 논문 Appendix D.4, p.36의 최종 LMI formulation에 해당해. 논문은 이 경우의 reformulation을 lossless한 것으로 제시하고 있어.
 
-이제부터는 $G$를 직접 최적화할 필요가 없어. 대신 potential 계수와 multiplier를 결정변수로 두고 위 조건을 만족시키면 되는 것이야.
+이제부터는 $G$를 직접 최적화할 필요가 없어. 대신 potential 계수와 multiplier를 decision variable로 두고 위 조건을 만족시키면 되는 것이야.
 
 ## 3. §3.2.1 — SDP로 $b_N$ 최대화
 
@@ -377,7 +377,7 @@ $$
 
 코드의 점 번호 `1, 2, 3`은 각각 $\star,k,k+1$에 대응해. 수식의 계수벡터는 열벡터이고 코드의 `xk`, `gxk`, `fxk` 등은 행벡터라서, 예를 들어 $\mathbf x_k$는 `xk.T`에 대응해. 또한 코드의 `G`, `F`는 gradient·함수값 계수벡터를 담은 딕셔너리이므로, 여기서 정의한 Gram matrix $G$ 및 함수값 행렬 $F$와 구별해서 읽으면 돼.
 
-코드는 $G$를 결정변수로 선언하는 대신 §2의 조건을 사용해 potential 계수와 multiplier를 구해. `Q[k+1]`에는 대칭 조건을 두며 별도의 PSD 제약은 두지 않아. 모든 전이의 조건을 하나로 모아 `tau`를 최대화하고, $N=100$이면 $3\times3$ LMI 100개와 함수값에 대한 scalar equality 200개가 생겨.
+코드는 $G$를 decision variable로 선언하는 대신 §2의 조건을 사용해 potential 계수와 multiplier를 구해. `Q[k+1]`에는 대칭 조건을 두며 별도의 PSD 제약은 두지 않아. 모든 전이의 조건을 하나로 모아 `tau`를 최대화하고, $N=100$이면 $3\times3$ LMI 100개와 함수값에 대한 scalar equality 200개가 생겨.
 
 출처: 첨부 GD 실험 사양서 §1, §3, §5–6. 이 대응표는 논문의 Appendix D.4 조건이 코드에서 어디에 구성되는지 연결한 것이야.
 
@@ -441,7 +441,7 @@ $$
 
 갈색 수치해에서 출발하여 빨간색, 파란색 순서로 단순화해 보니, 특히 파란색의 간단한 구조로도 $b_N=O(N^2)$을 유지할 수 있었어.
 
-반면 $d_k=0$으로 제한하면 원하는 $O(N^{-2})$ gradient norm 제곱 수렴률을 얻지 못했어.
+반면 $d_k=0$으로 제한하면 원하는 $O(N^{-2})$ gradient norm 제곱 convergence rate를 얻지 못했어.
 
 그래서 논문은 다음과 같은 형태의 potential을 선택하게 돼.
 
@@ -664,7 +664,7 @@ $$
 
 이것이 논문 p.6에서 제시한 해석적 potential이야.
 
-## 7. 수렴률 도출
+## 7. Convergence rate 도출
 
 모든 단계에서 potential이 감소하므로
 
@@ -700,7 +700,7 @@ $$
 \boxed{ \Vert f'(x_k)\Vert ^2 \le \frac{L(f(x_0)-f_\star)+L^2\Vert x_0-x_\star\Vert ^2} {k(k+2)} =O(k^{-2}). }
 $$
 
-즉, 하나의 potential로 함수값 오차와 gradient norm 제곱의 수렴률을 동시에 증명한 거야.
+즉, 하나의 potential로 함수값 오차와 gradient norm 제곱의 convergence rate를 동시에 증명한 거야.
 
 ## 8. SDP 최적해와 Theorem 3의 차이
 
@@ -714,7 +714,7 @@ $$
 | $N=100$  | 약 10201                         | 10200                                              |
 | 역할           | 주어진 경계조건에서 최적 계수 탐색             | 모든 $k$에 대해 검증되는 해석적 수열                         |
 
-따라서 Theorem 3이 원래 SDP의 최적값 $b_N^{\mathrm{opt}}=(N+1)^2$을 엄밀히 증명한 것은 아니야. 경계조건이 다른, 단순하면서도 동일한 $O(k^{-2})$ 수렴률을 보장하는 potential을 구성한 것이지.
+따라서 Theorem 3이 원래 SDP의 최적값 $b_N^{\mathrm{opt}}=(N+1)^2$을 엄밀히 증명한 것은 아니야. 경계조건이 다른, 단순하면서도 동일한 $O(k^{-2})$ convergence rate를 보장하는 potential을 구성한 것이지.
 
 ## 9. 지금까지 이해한 내용을 연결하면
 

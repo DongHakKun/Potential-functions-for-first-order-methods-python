@@ -16,7 +16,7 @@
 | --- | --- |
 | GD | Gram 행렬·계수벡터 정의, interpolation 행렬, Lagrangian에서 LMI까지의 연결, Python 코드 대응, Figure 1의 경계조건 보강 |
 | SGD | 일반 $n$의 계수벡터와 potential 행렬, variance 제약의 부호, Figure 2의 최종 거리항, 표기 충돌 및 비교표 수정 |
-| Averaging | Theorem 6의 완전제곱 전개, 두 방법의 실제 LMI와 잔차 행렬, 가중평균과 코드의 산술평균 구분, 감소 step-size의 오차항 분석 및 최종 계수표 교정 |
+| Averaging | Theorem 6의 완전제곱 전개, 두 방법의 실제 LMI와 residual 행렬, weighted average와 코드의 arithmetic average 구분, 감소 step-size의 오차항 분석 및 최종 계수표 교정 |
 | 공통 | 수식 구분자·표·제목 단계 정리, 그림 연결 복구 |
 
 ## 그림

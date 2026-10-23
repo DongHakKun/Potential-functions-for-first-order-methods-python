@@ -17,7 +17,7 @@ f(x)=\frac1n\sum_{\ell=1}^nf_\ell(x),\qquad
 f_\ell\in\mathcal F_L,\qquad f_\ell'(x_\star)=0\quad(\ell=1,\ldots,n)
 $$
 
-앞의 bounded variance setting과 달리, 모든 component의 gradient가 공통 최적점에서 0이라고 가정한다. 이 가정은 component별 interpolation에 반영하며, 별도의 분산 상한 제약과 오차항은 사용하지 않는다.
+앞의 bounded variance setting과 달리, 모든 component의 gradient가 공통 최적점에서 0이라고 가정한다. 이 가정은 component별 interpolation에 반영하며, 별도의 variance 상한 제약과 오차항은 사용하지 않는다.
 
 Appendix F.2에서는 다음 potential의 형태를 정하고 그 계수를 찾는다. 전체 gradient뿐 아니라 component gradient의 norm 제곱도 포함한다는 점이 앞의 실험과 다르다.
 
@@ -57,7 +57,7 @@ $$
 
 `relax=2`에서는 전이마다 `mu_X[k+1][1] == 0`을 추가한다. `mu_X[k+1][0]`이 0이 아니면 8단계의 비율은 $\alpha_k=0$이다. 분모가 0인 경우는 8단계에서 설명한다. `relax=3`의 주석에도 $\alpha_k=0$이라고 적혀 있으나, 코드에서 이 등식을 추가하는 분기는 `relax == 2`뿐이다. Figure 5에서는 `relax=0,1,2`의 결과를 비교한다.
 
-표의 “자유”는 SDP의 결정변수라는 뜻이다. 이 계수들도 5단계의 LMI와 6단계의 전체 제약을 만족해야 한다. 예를 들어 $a_k$는 $S_{k-1}\succeq0$, $(S_{k-1})_{11}=a_k$의 영향을 받는다. 표는 중간 상태의 계수를 다루며, $k=0,N$의 초기·최종 계수 조건은 2단계에서 설명한다.
+표의 “자유”는 SDP의 decision variable이라는 뜻이다. 이 계수들도 5단계의 LMI와 6단계의 전체 제약을 만족해야 한다. 예를 들어 $a_k$는 $S_{k-1}\succeq0$, $(S_{k-1})_{11}=a_k$의 영향을 받는다. 표는 중간 상태의 계수를 다루며, $k=0,N$의 초기·최종 계수 조건은 2단계에서 설명한다.
 
 ## 2. Potential Inequality
 
@@ -122,7 +122,7 @@ $$
 
 초기 상태는 $z_0=x_0$로 둔다. 코드의 `tau`는 최종 함수값 계수 $d_N$을 나타내며, 알고리즘 파라미터 $\tau_k$와 구분한다. `a[N+1]`에는 위 식의 $a_N$을 사용한다.
 
-각 단계의 부등식에 기대값을 취하고 더하면 초기 potential이 최종 potential의 기대값을 제어한다. `relax=1,2,3`의 최종 거리항도 비음수이므로, $d_N>0$인 해에서는 같은 형태의 함수값 오차 bound를 얻는다. SDP는 각 설정의 초기·최종 계수 조건 아래에서 $d_N$을 최대화한다.
+각 단계의 부등식에 expectation을 취하고 더하면 초기 potential이 최종 potential의 expectation을 제어한다. `relax=1,2,3`의 최종 거리항도 비음수이므로, $d_N>0$인 해에서는 같은 형태의 함수값 오차 bound를 얻는다. SDP는 각 설정의 초기·최종 계수 조건 아래에서 $d_N$을 최대화한다.
 
 ## 3. Finite-dimensional Gram representation
 
@@ -266,7 +266,7 @@ M = np.array([[-L*m, L*m, m, -L],
 
 ### Line-search 등식
 
-Appendix F.2의 line-search에서 얻는 직교 조건을 직접 쓰면 다음과 같다.
+Appendix F.2의 line-search에서 얻는 orthogonality condition을 직접 쓰면 다음과 같다.
 
 $$
 \begin{aligned}
@@ -310,7 +310,7 @@ a_{k+1}
 \begin{pmatrix}1&\delta_k&-\gamma_k\end{pmatrix}
 $$
 
-이다. 여기에 대응하는 원본 변수 `S[k]`를 대칭 3×3 결정변수로 선언하고 `S[k] >> 0`, `S[k][0,0] == a[k+1]`을 적용한다. 수식의 단계 $k$로 쓰면 $S_k\succeq0$, $(S_k)_{11}=a_{k+1}$이다.
+이다. 여기에 대응하는 원본 변수 `S[k]`를 대칭 3×3 decision variable로 선언하고 `S[k] >> 0`, `S[k][0,0] == a[k+1]`을 적용한다. 수식의 단계 $k$로 쓰면 $S_k\succeq0$, $(S_k)_{11}=a_{k+1}$이다.
 
 각 outcome에서는 `TT = np.column_stack((yk1, zk-yk1, gyk1[i-1,:]))`를 만들고 `TT @ S[k] @ TT.T`를 계산한다. 이를 $1/n$씩 더한 `dsstep_avg`가 다음 거리항의 이차항 행렬이다. `TT`는 고정된 배열이므로 이 식은 `S[k]`에 대해 affine이다. 별도의 rank-one 제약 없이 해에서 파라미터를 복원하는 이유는 Appendix D.5와 8단계에 설명되어 있다.
 
@@ -333,7 +333,7 @@ $$
 
 ## 6. SDP formulation in CVXPY
 
-논문 식 (22)에 따라 최종 함수값 계수 $d_N$을 최대화한다. 3–4단계의 Gram 표현과 상수행렬로 5단계의 제약식을 CVXPY 제약으로 옮기고, 초기·최종 계수 조건과 `relax` 값에 따른 계수 조건도 함께 적용한다. 모든 행렬 원소와 선형 등식은 결정변수에 대해 affine이다.
+논문 식 (22)에 따라 최종 함수값 계수 $d_N$을 최대화한다. 3–4단계의 Gram 표현과 상수행렬로 5단계의 제약식을 CVXPY 제약으로 옮기고, 초기·최종 계수 조건과 `relax` 값에 따른 계수 조건도 함께 적용한다. 모든 행렬 원소와 선형 등식은 decision variable에 대해 affine이다.
 
 ### CVXPY 변수와 제약의 조립 순서
 
@@ -458,11 +458,11 @@ obj = tau
 
 Interpolation 루프의 `l`은 component를, `i,j`는 interpolation point를 나타낸다. `X`, `G`, `F`는 각각 점의 위치, 해당 component의 gradient, 함수값을 고르는 배열의 딕셔너리이다. 각 순서쌍의 동일한 multiplier를 이차항 `TT.T @ M @ TT`와 함수값 계수 `fi-fj`에 곱해 더한다.
 
-### 전체 SDP와 결정변수 규모
+### 전체 SDP와 decision variable 규모
 
-목적함수는 $\max d_N$이다. 모든 전이에 5단계의 NSD·선형 등식·multiplier 부호 조건과 $S_k\succeq0$, $(S_k)_{11}=a_{k+1}$을 적용한다. `relax=2`에서는 `mu_X[k][1] == 0`도 추가한다.
+objective는 $\max d_N$이다. 모든 전이에 5단계의 NSD·선형 등식·multiplier 부호 조건과 $S_k\succeq0$, $(S_k)_{11}=a_{k+1}$을 적용한다. `relax=2`에서는 `mu_X[k][1] == 0`도 추가한다.
 
-이 SDP의 결정변수는 중간 potential 계수 $q_{1,k},\ldots,q_{4,k},a_k,d_k$, 최종 $d_N$, 단계별 `lam`, `mu_Y`, `mu_X`, `S`이다. 알고리즘의 네 파라미터는 이 해에서 복원하므로, SDP 안에서는 파라미터와 potential 계수를 직접 곱하지 않는다.
+이 SDP의 decision variable은 중간 potential 계수 $q_{1,k},\ldots,q_{4,k},a_k,d_k$, 최종 $d_N$, 단계별 `lam`, `mu_Y`, `mu_X`, `S`이다. 알고리즘의 네 파라미터는 이 해에서 복원하므로, SDP 안에서는 파라미터와 potential 계수를 직접 곱하지 않는다.
 
 $n=2,N=100$의 원래 SDP 규모는 다음과 같다.
 
@@ -574,7 +574,7 @@ $$
 
 ### 복원식의 분자·분모와 부호
 
-$y_{k+1}=(1-\tau_k)x_k+\tau_kz_k$를 첫 두 직교 조건의 가중합에 대입하면, gradient와 내적을 이루는 방향은 $z_k-x_k$의 배수가 된다. 그 계수가 0이 되도록 정한 값이 코드의 `mu_Y` 비율이다.
+$y_{k+1}=(1-\tau_k)x_k+\tau_kz_k$를 첫 두 orthogonality condition의 가중합에 대입하면, gradient와 내적을 이루는 방향은 $z_k-x_k$의 배수가 된다. 그 계수가 0이 되도록 정한 값이 코드의 `mu_Y` 비율이다.
 
 $x_{k+1}^{(i)}=y_{k+1}-\alpha_kf_i'(y_{k+1})$를 나머지 두 조건에 대입하면, 탐색 방향에 곱해지는 계수는 `mu_X`의 첫 성분에 $\alpha_k$를 곱한 값과 두 번째 성분의 합이다. 이 합을 0으로 두므로 $\alpha_k$의 복원식에는 음의 부호가 붙는다.
 

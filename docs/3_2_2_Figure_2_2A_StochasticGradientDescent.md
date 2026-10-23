@@ -50,7 +50,7 @@ $$
 | 2 | $b_k=c_k=0$ | $a_k,d_k$ |
 | 3 | $a_k=L/2,\ b_k=c_k=0$ | $d_k$ |
 
-`relax` 값과 관계없이 $e_k$와 interpolation multiplier는 결정변수이다. $Q_k$는 대칭 행렬이며 별도의 PSD 제약은 없다. 초기·최종 계수는 2단계에서 지정한다.
+`relax` 값과 관계없이 $e_k$와 interpolation multiplier는 decision variable이다. $Q_k$는 대칭 행렬이며 별도의 PSD 제약은 없다. 초기·최종 계수는 2단계에서 지정한다.
 
 Figure 2의 기본 설정은 다음과 같다.
 
@@ -69,7 +69,7 @@ delta = lambda k: 1 / L / (k + 1) ** alpha
 
 ## 2. Potential Inequality
 
-각 전이 $k=0,\ldots,N-1$에서 다음 iterate와 기대값 부등식을 사용한다.
+각 전이 $k=0,\ldots,N-1$에서 다음 iterate와 expectation 부등식을 사용한다.
 
 $$
 x_{k+1}^{(i)}=x_k-\delta_kG(x_k;i),\qquad
@@ -95,7 +95,7 @@ $$
 
 원본의 `a0,b0,c0,d0,aN,bN,cN,dN`이 이 계수에 대응하며, `tau=cp.Variable(name="tau")`가 최종 계수 $d_N$이다. CVXPY에서 초기·최종 계수를 지정하는 전체 코드는 6단계에 둔다. `Q[1]`과 `Q[N+1]`은 각각 $Q_0,Q_N$에 대응한다.
 
-각 단계의 부등식에 기대값을 취하고 더하면 중간 potential이 소거된다. `relax=0,1,2`에서는
+각 단계의 부등식에 expectation을 취하고 더하면 중간 potential이 소거된다. `relax=0,1,2`에서는
 
 $$
 d_N\mathbb E[f(x_N)-f_\star]
@@ -209,7 +209,7 @@ Q_{k+1}[\mathbf x_i-\mathbf x_\star\ \mathbf g_i]^\top.
 \end{aligned}
 $$
 
-코드의 `statesKG`와 `statesK1G`는 위 행렬곱에서 $Q_k,Q_{k+1}$ 왼쪽의 두 열을 만든다. 다음 potential의 기대 이차항은 $n^{-1}\sum_{i=1}^n V_{k+1}^{(i)}$로 직접 쓴다. 코드에서는 `statesK1G @ Q[k+1] @ statesK1G.T / n`을 outcome마다 더한다.
+코드의 `statesKG`와 `statesK1G`는 위 행렬곱에서 $Q_k,Q_{k+1}$ 왼쪽의 두 열을 만든다. 다음 potential의 expected 이차항은 $n^{-1}\sum_{i=1}^n V_{k+1}^{(i)}$로 직접 쓴다. 코드에서는 `statesK1G @ Q[k+1] @ statesK1G.T / n`을 outcome마다 더한다.
 
 ```python
 fxk = np.zeros(dimF)
@@ -221,7 +221,7 @@ fxs = np.zeros(dimF)  # f(x*) = 0.
 xk1 = lambda k: np.ones((n, 1)) * xk - delta(k) * Gxk
 ```
 
-Gram matrix 자체를 결정변수로 선언하지 않고, 논문의 dualization으로 얻은 LMI 조건에서 potential 계수와 multiplier를 구한다. 코드의 `G`, `F`는 interpolation용 딕셔너리이며, 위 수식의 Gram matrix와 함수값 행렬과 구분한다.
+Gram matrix 자체를 decision variable로 선언하지 않고, 논문의 dualization으로 얻은 LMI 조건에서 potential 계수와 multiplier를 구한다. 코드의 `G`, `F`는 interpolation용 딕셔너리이며, 위 수식의 Gram matrix와 함수값 행렬과 구분한다.
 
 ## 4. Interpolation matrices + multipliers
 
@@ -310,7 +310,7 @@ $$
 | 0 | $d_N$을 최대화하는 1차 SDP | 1차 SDP의 계수 |
 | 1 | 1차 SDP 후, $d_N$ 하한을 추가하여 $\sum e_k$를 최소화하는 2차 SDP | 2차 SDP의 계수 |
 
-논문 식 (4)의 두 번째 최적화는 첫 번째 최적화에서 얻은 최종 함수값 계수를 고정하고 누적 variance 계수를 최소화한다. 원본 코드는 첫 번째 문제의 목적식 `obj=-tau`에서 얻은 `-float(obj.value)`를 사용해 `tau >= -float(obj.value) - tol_reopt`를 추가한다. 이 허용오차 조건과 기존 제약 아래에서 `accumulated_ek`를 최소화한다.
+논문 식 (4)의 두 번째 최적화는 첫 번째 최적화에서 얻은 최종 함수값 계수를 고정하고 누적 variance 계수를 최소화한다. 원본 코드는 첫 번째 문제의 objective `obj=-tau`에서 얻은 `-float(obj.value)`를 사용해 `tau >= -float(obj.value) - tol_reopt`를 추가한다. 이 tolerance 조건과 기존 제약 아래에서 `accumulated_ek`를 최소화한다.
 
 ### 초기·최종 계수 조건과 공통 행렬 구성
 
@@ -453,7 +453,7 @@ $n=2,N=100$에서는 5×5 NSD LMI가 100개, 함수값 선형 등식이 300개�
 | 2 | 99 | 99 | 1600 | 100 | 1 | 1899 |
 | 3 | 0 | 99 | 1600 | 100 | 1 | 1800 |
 
-기본 `relax=0`에서는 $2097=297+99+1600+100+1$개의 독립 scalar 변수를 사용한다. 두 번째 SDP는 같은 결정변수와 제약을 사용하고 objective와 $d_N$의 하한만 바꾼다.
+기본 `relax=0`에서는 $2097=297+99+1600+100+1$개의 독립 scalar 변수를 사용한다. 두 번째 SDP는 같은 decision variable과 제약을 사용하고 objective와 $d_N$의 하한만 바꾼다.
 
 ## 7. MOSEK numerical optimization
 

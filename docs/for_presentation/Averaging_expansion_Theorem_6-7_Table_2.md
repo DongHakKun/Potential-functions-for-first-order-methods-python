@@ -117,7 +117,7 @@ $$
 \boxed{ z_N=\frac1N\sum_{t=1}^N x_t. }
 $$
 
-즉, $z_N$은 첫 $N$개의 SGD update 결과의 산술평균이야.
+즉, $z_N$은 첫 $N$개의 SGD update 결과의 arithmetic average야.
 
 ### 2.2. Parameterized potential
 
@@ -344,7 +344,7 @@ $$
 \end{aligned}
 $$
 
-가 돼. 따라서 Appendix E.2의 잔차를 다음과 같이 얻어.
+가 돼. 따라서 Appendix E.2의 residual을 다음과 같이 얻어.
 
 $$
 \begin{aligned} {}&\frac{(d_k+1)\delta_k}{2} \mathbb E_i\left\Vert  f'(z_{k+1}^{(i)}) -\frac{ d_kf'(z_k)+f'(x_k)-L\delta_kG(x_k;i) }{d_k+1} \right\Vert ^2\\[6pt] &+\frac{d_k\delta_k}{2(d_k+1)} \Vert f'(z_k)+(L\delta_k-1)f'(x_k)\Vert ^2\\[6pt] &+\frac{\delta_k}{2} \left[1+L\delta_k(1-L\delta_k)\right] \Vert f'(x_k)\Vert ^2. \end{aligned}
@@ -408,7 +408,7 @@ $$
 
 이기 때문이야.
 
-고정 step-size에서는 $d_{k+1}=d_k+1$로 자연스럽게 연결돼. Step-size가 변할 때에는 averaging weight를 바꾸어 두 계수를 정확히 맞출 수 있어. 감소하는 step-size에서는 산술평균을 유지하면서 다음 함수값의 계수를 낮추어 연결하는 방법도 있어. 먼저 Appendix E.5가 사용하는 첫 번째 구성을 보자.
+고정 step-size에서는 $d_{k+1}=d_k+1$로 자연스럽게 연결돼. Step-size가 변할 때에는 averaging weight를 바꾸어 두 계수를 정확히 맞출 수 있어. 감소하는 step-size에서는 arithmetic average를 유지하면서 다음 함수값의 계수를 낮추어 연결하는 방법도 있어. 먼저 Appendix E.5가 사용하는 첫 번째 구성을 보자.
 
 ### 4.1. Appendix E.5의 누적 계수 $D_k$
 
@@ -465,7 +465,7 @@ $$
 
 즉, step-size에 따라 가중치가 달라지는 평균을 사용하게 되는 거야.
 
-$d_k=k$인 산술평균은 고정 step-size에서 이 식의 특수한 경우야.
+$d_k=k$인 arithmetic average는 고정 step-size에서 이 식의 특수한 경우야.
 
 ### 4.2. 재구성한 potential
 
@@ -495,9 +495,9 @@ $$
 \boxed{ \begin{aligned} D_N\mathbb E[f(z_N)-f_\star] +\frac L2\mathbb E\Vert x_N-x_\star\Vert ^2 \le{}&\frac L2\Vert x_0-x_\star\Vert ^2\\ &+\frac{L\sigma^2}{2} \sum_{k=0}^{N-1}\delta_k^2 \left(1+\frac{L^2\delta_k^2}{D_{k+1}}\right). \end{aligned} }
 $$
 
-이 식이 Appendix E.5에서 Table 2의 Polyak–Ruppert averaging 수렴률을 구하는 출발점이야.
+이 식이 Appendix E.5에서 Table 2의 Polyak–Ruppert averaging convergence rate를 구하는 출발점이야.
 
-### 4.3. Python 실험의 산술평균과는 어떻게 연결되는가?
+### 4.3. Python 실험의 arithmetic average와는 어떻게 연결되는가?
 
 첨부된 2B 실험 사양서의 §2와 §9에 따르면, Python 코드의 averaging update는 step-size를 바꾸어도
 
@@ -506,9 +506,9 @@ z_{k+1}^{(i)}
 =\frac{k}{k+1}z_k+\frac1{k+1}x_{k+1}^{(i)}
 $$
 
-를 유지해. 따라서 감소 step-size에서는 방금 구성한 Appendix E.5의 step-size 가중평균과 평균 가중치가 달라. 기본 설정 $\delta_k=1/L$에서는 $D_k=k$, $d_k=k$이므로 두 평균이 일치해.
+를 유지해. 따라서 감소 step-size에서는 방금 구성한 Appendix E.5의 step-size weighted average와 averaging weight가 달라. 기본 설정 $\delta_k=1/L$에서는 $D_k=k$, $d_k=k$이므로 두 평균이 일치해.
 
-산술평균에도 Theorem 6의 한 단계 결과를 $d_k=k$로 적용할 수 있어. $f(z_{k+1}^{(i)})-f_\star\ge0$이고 $\delta_{k+1}\le\delta_k$이므로
+Arithmetic average에도 Theorem 6의 한 단계 결과를 $d_k=k$로 적용할 수 있어. $f(z_{k+1}^{(i)})-f_\star\ge0$이고 $\delta_{k+1}\le\delta_k$이므로
 
 $$
 (k+1)L\delta_{k+1}\,
@@ -518,7 +518,7 @@ $$
 \mathbb E_i[f(z_{k+1}^{(i)})-f_\star].
 $$
 
-즉, 정리 좌변의 함수값 계수를 낮추어도 부등식은 유지돼. 원본 Python 코드의 `d`는 함수값 계수이고, Theorem 6의 $d_k$는 평균 가중치야. 이 문단의 potential을 계수까지 풀어 쓰면
+즉, 정리 좌변의 함수값 계수를 낮추어도 부등식은 유지돼. 원본 Python 코드의 `d`는 함수값 계수이고, Theorem 6의 $d_k$는 averaging weight야. 이 문단의 potential을 계수까지 풀어 쓰면
 
 $$
 \boxed{
@@ -534,7 +534,7 @@ e_k=\frac{L\delta_k^2}{2}
 \left(1+\frac{L\delta_k}{k+1}\right)
 $$
 
-이야. §7.3의 Python 실험은 이 산술평균 알고리즘을 대상으로 potential 계수를 탐색하고, §9의 Table 2 전개는 §4.1–4.2의 $D_k$를 사용하는 가중평균 표현을 따른다는 점을 기억하면 돼.
+이야. §7.3의 Python 실험은 이 arithmetic average 알고리즘을 대상으로 potential 계수를 탐색하고, §9의 Table 2 전개는 §4.1–4.2의 $D_k$를 사용하는 weighted average 표현을 따른다는 점을 기억하면 돼.
 
 출처: 논문 Appendix E.5, pp.44–45; `3_2_2_Theorem_6_2B_StochasticGradientDescentWithAveraging.md`, §2 및 §9의 “Theorem 6과 함수값 계수의 대응”.
 
@@ -812,7 +812,7 @@ $$
 
 이 조건에는 **함수값 계수를 모두 0으로 만드는 선형 등식**과 $\lambda_{p,q}\ge0$, $e_k\ge0$도 함께 필요해. 두 averaging 방법에서 이 식들을 실제로 구성해 보자. $P,F$의 배치는 첨부된 2B·2C 실험 사양서 §3–5를 따르고, 해석적 계수와 multiplier는 앞의 Appendix E.2·E.3 증명을 사용해.
 
-이 절의 $V_k,V_{k+1}^{(i)},M_{i,j},A_{\mathrm{var}}$는 Appendix E.7의 표기를 따른다. 두 상태를 가진 potential을 원본 Python 코드의 계수벡터로 구성한다. `xk`, `zk`, `gzk`, `Gxk`, `gzk1`, `fzk`, `fxk`, `fzk1`는 2B 코드의 실제 변수명이다. 코드의 상태 인덱스는 수식보다 1 크므로, 수식의 상태 $k$의 함수값 계수는 `d[k+1]`이다. Theorem 6의 $d_k$는 평균 가중치를 뜻하므로, 코드 계수를 설명할 때에는 이 둘을 문맥으로 구분한다.
+이 절의 $V_k,V_{k+1}^{(i)},M_{i,j},A_{\mathrm{var}}$는 Appendix E.7의 표기를 따른다. 두 상태를 가진 potential을 원본 Python 코드의 계수벡터로 구성한다. `xk`, `zk`, `gzk`, `Gxk`, `gzk1`, `fzk`, `fxk`, `fzk1`는 2B 코드의 실제 변수명이다. 코드의 상태 인덱스는 수식보다 1 크므로, 수식의 상태 $k$의 함수값 계수는 `d[k+1]`이다. Theorem 6의 $d_k$는 averaging weight를 뜻하므로, 코드 계수를 설명할 때에는 이 둘을 문맥으로 구분한다.
 
 ### 7.1. Theorem 6의 Gram representation과 LMI
 
@@ -840,7 +840,7 @@ V_{k+1}^{(i)}&=\mathtt{statesK1G}\,Q_{k+1}\,\mathtt{statesK1G}^{\top}
 \end{aligned}
 $$
 
-`statesK1G`는 outcome $i$의 루프에서 구성된다. 따라서 potential의 기대 차이는
+`statesK1G`는 outcome $i$의 루프에서 구성된다. 따라서 expected potential difference는
 
 $$
 \mathbb E_i\phi_{k+1}^f-\phi_k^f
@@ -848,7 +848,7 @@ $$
 +F\left[\frac{d_{k+1}}n\sum_i\mathtt{fzk1}[i-1]-d_k\mathtt{fzk}\right]
 $$
 
-이다. 분산 행렬은 원본의 `Avar`이며
+이다. variance 행렬은 원본의 `Avar`이며
 
 $$
 A_{\mathrm{var}}=\frac1n\sum_i
@@ -871,11 +871,11 @@ $$
 \end{aligned}
 $$
 
-$n=2$에서는 7×7 LMI와 함수값 네 개에 대한 네 개의 scalar 등식이다. 알고리즘의 step-size와 평균 가중치를 고정하면 `statesKG`, `statesK1G`, `XK1`, `Avar`, `TT.T @ M @ TT`는 상수다. 따라서 각 행렬 성분에는 $Q_k,Q_{k+1},a'_k,a'_{k+1},e_k,\lambda_{i,j}$의 상수배와 합만 나타난다.
+$n=2$에서는 7×7 LMI와 함수값 네 개에 대한 네 개의 scalar 등식이다. 알고리즘의 step-size와 averaging weight를 고정하면 `statesKG`, `statesK1G`, `XK1`, `Avar`, `TT.T @ M @ TT`는 상수다. 따라서 각 행렬 성분에는 $Q_k,Q_{k+1},a'_k,a'_{k+1},e_k,\lambda_{i,j}$의 상수배와 합만 나타난다.
 
 **Theorem 6의 한 단계 계수 대입**
 
-여기부터 $d_k$는 다시 Theorem 6의 **평균 가중치**다. 현재·다음 함수값 계수에는 각각 $d_k\delta_kL$, $(d_k+1)\delta_kL$를 대입하고, $Q_k=Q_{k+1}=0$, $a'_k=a'_{k+1}=L/2$로 둔다. Appendix E.5의 평균을 사용할 때 이 두 함수값 계수는 논문의 $D_k,D_{k+1}$이다.
+여기부터 $d_k$는 다시 Theorem 6의 **averaging weight**다. 현재·다음 함수값 계수에는 각각 $d_k\delta_kL$, $(d_k+1)\delta_kL$를 대입하고, $Q_k=Q_{k+1}=0$, $a'_k=a'_{k+1}=L/2$로 둔다. Appendix E.5의 평균을 사용할 때 이 두 함수값 계수는 논문의 $D_k,D_{k+1}$이다.
 
 $$
 \lambda_{\star,x_k}=\delta_kL,\qquad
@@ -923,7 +923,7 @@ $$F=[f(y_k)-f_\star,\ f(y_{k+1})-f_\star]$$
 
 를 사용한다. `xk`, `yk`, `gyk`는 첫 세 열을, `Gyk1[i-1]`은 oracle 열을 고른다. `gyk1 = np.sum(Gyk1, axis=0) / n`은 $f'(y_{k+1})$의 계수벡터다. 평균점은 oracle 호출 전에 결정되므로 다음 평균점과 gradient가 각 outcome에 공통이다. $n=2$에서는 5×5 Gram 행렬과 세 interpolation point의 여섯 부등식을 사용한다.
 
-$V_k,V_{k+1}^{(i)}$는 §7.1과 같은 원본 `statesKG`, `statesK1G`, `XK1`의 식으로 구성하되, 평균점에 관한 열이 `yk`, `gyk`, `yk1(d[k], k)`, `gyk1`로 바뀐다. 분산 행렬은
+$V_k,V_{k+1}^{(i)}$는 §7.1과 같은 원본 `statesKG`, `statesK1G`, `XK1`의 식으로 구성하되, 평균점에 관한 열이 `yk`, `gyk`, `yk1(d[k], k)`, `gyk1`로 바뀐다. variance 행렬은
 
 $$
 A_{\mathrm{var}}=\frac1n\sum_i
@@ -997,9 +997,9 @@ $$
 
 의 계수를 탐색해.
 
-이 §7.3의 $d_k$는 원본 코드의 함수값 계수다. Theorem 6의 $d_k$는 평균 가중치이며, 그 한 단계 함수값 계수는 $L\delta_kd_k$다.
+이 §7.3의 $d_k$는 원본 코드의 함수값 계수다. Theorem 6의 $d_k$는 averaging weight이며, 그 한 단계 함수값 계수는 $L\delta_kd_k$다.
 
-이 실험의 averaging update는 §4.3에서 설명한 산술평균이야. 따라서 일반 step-size에서 §4.1의 $D_k$ 가중평균과 같은 알고리즘으로 취급하면 안 돼. 기본 설정 $\delta_k=1/L$에서는 두 평균이 일치하며, 해석적 선택도 $d_k=k$로 같아.
+이 실험의 averaging update는 §4.3에서 설명한 arithmetic average야. 따라서 일반 step-size에서 §4.1의 $D_k$ weighted average와 같은 알고리즘으로 취급하면 안 돼. 기본 설정 $\delta_k=1/L$에서는 두 평균이 일치하며, 해석적 선택도 $d_k=k$로 같아.
 
 중간 상태 $k=1,\ldots,N-1$의 탐색 조건은 다음과 같아.
 
@@ -1026,7 +1026,7 @@ $$
 
 두 실험 모두 초기에는 $Q_0=0$, $a'_0=L/2$, 함수값 계수는 0이야. 최종에는 $Q_N=0$이고, $a'_N$은 $\mathrm{relax}=0$에서 0, $\mathrm{relax}=1$에서 $L/2$야. 중간 $Q_k$에는 별도의 PSD 조건을 요구하지 않아. Gram matrix의 $G\succeq0$과 potential 계수행렬 $Q_k$의 조건은 구분해야 해.
 
-출처: 첨부된 2B·2C 실험 사양서 §1–2 및 §6. 2B의 감소 step-size와 산술평균에 대한 해석적 계수 연결은 같은 사양서 §9를 참고하면 돼.
+출처: 첨부된 2B·2C 실험 사양서 §1–2 및 §6. 2B의 감소 step-size와 arithmetic average에 대한 해석적 계수 연결은 같은 사양서 §9를 참고하면 돼.
 
 ## 8. 고정 step-size에서 세 방법을 직접 비교
 
@@ -1106,13 +1106,13 @@ $$
 
 따라서 고정 step-size는 variance accumulation을 제어하지만, 이 bound에서 오차를 0으로 보내려면 step-size를 감소시켜야 해.
 
-## 9. Table 2 — Decreasing step-size와 수렴률 비교
+## 9. Table 2 — Decreasing step-size와 convergence rate 비교
 
 논문 p.11 Table 2, Appendix E.5 pp.43–45
 
 이제 최종 단계야.
 
-논문 Table 2는 세 알고리즘에 같은 decreasing step-size policy를 적용했을 때의 수렴률을 비교하고 있어.
+논문 Table 2는 세 알고리즘에 같은 decreasing step-size policy를 적용했을 때의 convergence rate를 비교하고 있어.
 
 $$
 \boxed{ \delta_k=\frac1{L(k+1)^\alpha}. }
@@ -1128,7 +1128,7 @@ $$
 d_{k+1}=d_k+L\delta_k
 $$
 
-를 사용하고, Theorem 6도 Appendix E.5의 가중 평균 표현을 사용하면 같은 누적 계수 $\sum_{t=0}^{k-1}L\delta_t$를 얻어.
+를 사용하고, Theorem 6도 Appendix E.5의 weighted average 표현을 사용하면 같은 누적 계수 $\sum_{t=0}^{k-1}L\delta_t$를 얻어.
 
 따라서 세 방법 모두
 
@@ -1204,7 +1204,7 @@ $$
 
 #### Optimal $\alpha$ 선택
 
-두 항 중 느리게 감소하는 항이 최종 수렴률을 결정해.
+두 항 중 느리게 감소하는 항이 최종 convergence rate를 결정해.
 
 그래서 두 exponent를 같게 만드는 선택을 생각할 수 있어.
 
@@ -1272,7 +1272,7 @@ e_k-\frac{L\delta_k^2}{2}
 =O(k^{-1-3\alpha})
 $$
 
-이므로 $\alpha>0$에서 그 누적합은 유계야. 이를 $\sum_{t=0}^{N-1}L\delta_t=\Theta(N^{1-\alpha})$로 나누면 추가 contribution은 $O(N^{\alpha-1})$이 돼. $0<\alpha<1/2$에서는 이 항이 $O(N^{-\alpha})$보다 빠르게 감소하므로, 두 averaging 방법의 지배적인 noise rate는 같아.
+이므로 $\alpha>0$에서 그 누적합은 bounded야. 이를 $\sum_{t=0}^{N-1}L\delta_t=\Theta(N^{1-\alpha})$로 나누면 추가 contribution은 $O(N^{\alpha-1})$이 돼. $0<\alpha<1/2$에서는 이 항이 $O(N^{-\alpha})$보다 빠르게 감소하므로, 두 averaging 방법의 지배적인 noise rate는 같아.
 
 즉, 두 averaging 방법 모두 Table 2의 형태로
 
@@ -1310,11 +1310,11 @@ $$
 
 가 돼.
 
-따라서 로그를 무시한 Table 2의 수렴률은 두 경우 모두 $O(N^{-1/2})$이야.
+따라서 로그를 무시한 Table 2의 convergence rate는 두 경우 모두 $O(N^{-1/2})$이야.
 
 ### 9.4. 논문 Table 2 정리
 
-Table 2 — 논문에 제시된 수렴률
+Table 2 — 논문에 제시된 convergence rate
 
 | Algorithm        | Initial distance      | Variance               | Optimal $\alpha$ |
 | ---------------- | --------------------- | ---------------------- | -------------------- |
@@ -1339,7 +1339,7 @@ Table 2 — 논문에 제시된 수렴률
 
 이것은 Appendix E.5의 $\sum\delta_k^2$, $\sum\delta_k^2\sum_{t=0}^{k}L\delta_t$를 각각 수렴하는 급수와 발산하는 급수로 구분하여 계산한 결과야.
 
-따라서 Table 2의 핵심 비교인 optimal $\alpha=2/3$ 대 $1/2$ 및 두 방법의 수렴률 차이는 유지되지만, 전체 $\alpha$ 범위에 대한 엄밀한 해석에는 위 구간별 표현이 필요해.
+따라서 Table 2의 핵심 비교인 optimal $\alpha=2/3$ 대 $1/2$ 및 두 방법의 convergence rate 차이는 유지되지만, 전체 $\alpha$ 범위에 대한 엄밀한 해석에는 위 구간별 표현이 필요해.
 
 ## 10. PR Averaging과 Primal Averaging의 직접 비교
 
@@ -1394,7 +1394,7 @@ $$
 | Variance coefficient | 없음                                               | $e_k=\frac{L\delta_k^2}{2}(1+\sum_{t=0}^{k}L\delta_t)$            | $e_k=\frac{L\delta_k^2}{2}\left(1+\frac{L^2\delta_k^2}{\sum_{t=0}^{k}L\delta_t}\right)$ | $e_k=L\delta_k^2/2$ |
 | 주요 보증                | $O(k^{-1})$ 함수값, $O(k^{-2})$ gradient 제곱 | $O(k^{-1/3})$                    | $O(k^{-1/2})$       | $O(k^{-1/2})$       |
 
-Stochastic 방법의 수렴률은 각 정리에서 선택한 decreasing step-size의 최적 exponent와 Table 2의 관례에 따라 logarithmic factor를 생략한 값이야.
+Stochastic 방법의 convergence rate는 각 정리에서 선택한 decreasing step-size의 최적 exponent와 Table 2의 관례에 따라 logarithmic factor를 생략한 값이야.
 
 우리가 공부한 전체 흐름은 다음과 같이 이어져.
 
@@ -1438,4 +1438,4 @@ $$
 
 Averaging의 가장 중요한 역할은 $\sum_{t=0}^{N-1}L\delta_t$을 키우는 것이 아니라, 그에 비해 $\sum e_k$가 증가하는 속도를 낮추는 것이야.
 
-이것이 SDP 수치탐색에서 단순한 potential을 발견하는 과정, Theorem 6·7의 해석적 certificate, 그리고 Table 2의 수렴률 개선을 하나로 연결하는 중심 원리야.
+이것이 SDP 수치탐색에서 단순한 potential을 발견하는 과정, Theorem 6·7의 해석적 certificate, 그리고 Table 2의 convergence rate 개선을 하나로 연결하는 중심 원리야.

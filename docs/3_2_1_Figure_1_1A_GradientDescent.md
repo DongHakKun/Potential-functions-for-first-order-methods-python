@@ -8,7 +8,7 @@
 
 ## 1. Parameterized Potential
 
-논문 식 (2)의 potential family는 다음과 같다. `relax` 값에 따라 일부 계수는 SDP 결정변수로 두고, 나머지는 상수로 고정한다.
+논문 식 (2)의 potential family는 다음과 같다. `relax` 값에 따라 일부 계수는 SDP decision variable로 두고, 나머지는 상수로 고정한다.
 
 $$
 \begin{aligned}
@@ -96,7 +96,7 @@ $$
 
 ## 3. Finite-dimensional Gram representation
 
-일반성을 잃지 않고 $x_\star=f_\star=0$으로 두고, 미분 가능한 볼록함수의 최적성 조건에 따라 최적점에서 $f'(x_\star)=0$임을 이용한다. 한 단계의 계산에 필요한 벡터와 함수값을 다음과 같이 모은다.
+일반성을 잃지 않고 $x_\star=f_\star=0$으로 두고, differentiable convex function의 optimality condition에 따라 최적점에서 $f'(x_\star)=0$임을 이용한다. 한 단계의 계산에 필요한 벡터와 함수값을 다음과 같이 모은다.
 
 $$
 P=[x_k\ f'(x_k)\ f'(x_{k+1})],\quad
@@ -328,7 +328,7 @@ problem = cp.Problem(cp.Minimize(-obj), cons)
 
 코드의 `k=1`은 수식의 $0\to1$, `k=N`은 $N-1\to N$ 전이다. 마지막 전이에서는 중간 계수를 생성하지 않고 이미 지정한 `Q[N+1]`과 `d[N+1]`을 사용한다.
 
-각 전이의 제약은 인접한 potential 계수를 공유한다. 따라서 100개 제약 묶음을 하나의 SDP로 구성하고 `cp.Minimize(-obj)`로 $b_N$을 최대화한다. objective와 제약 행렬의 각 원소는 결정변수에 대해 affine이다.
+각 전이의 제약은 인접한 potential 계수를 공유한다. 따라서 100개 제약 묶음을 하나의 SDP로 구성하고 `cp.Minimize(-obj)`로 $b_N$을 최대화한다. objective와 제약 행렬의 각 원소는 decision variable에 대해 affine이다.
 
 | `relax` | 중간 $Q_k$ 독립 원소 | 중간 $d_k$ | 선언된 $\lambda$ | $b_N$ | 합계 |
 | --- | ---: | ---: | ---: | ---: | ---: |
@@ -372,7 +372,7 @@ print(f"Elapsed time: {perf_counter()-t_start:.3f} seconds")
 
 코드는 `problem.status`가 `optimal` 또는 `optimal_inaccurate`일 때 결과를 사용한다. 음수를 최소화하도록 문제를 정의했기 때문에 `problem.value`에는 $-b_N$이, `tau.value`에는 구하려던 $b_N$이 들어 있다.
 
-각 CVXPY 결정변수의 수치해는 `.value`에 저장된다.
+각 CVXPY decision variable의 수치해는 `.value`에 저장된다.
 
 ## 8. Optimal coefficients / algorithm parameters
 

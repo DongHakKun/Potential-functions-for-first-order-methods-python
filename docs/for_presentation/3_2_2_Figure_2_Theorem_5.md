@@ -21,7 +21,7 @@ $$
 진행 순서는 다음과 같아.
 
 1. SGD와 bounded variance assumption
-2. Parameterized potential과 SDP 목적함수 식 (4)
+2. Parameterized potential과 SDP objective 식 (4)
 3. Stochastic Gram representation
 4. Interpolation + variance constraint
 5. Lagrangian → linear equality + LMI
@@ -55,7 +55,7 @@ $$
 \boxed{\mathbb E_i[G(x;i)]=f'(x)}
 $$
 
-즉, stochastic gradient의 기대값이 true gradient와 같다는 조건이야.
+즉, stochastic gradient의 expectation이 true gradient와 같다는 조건이야.
 
 Uniformly bounded variance
 
@@ -101,7 +101,7 @@ $$
 
 Theorem 5에서는 조금 더 일반적으로 $\delta_k\ge0$을 다루고, 결과적으로 $\delta_k\le1/L$이면 유효한 sufficient condition이 된다는 것을 증명할 거야.
 
-GD와 달리 $x_{k+1}$이 random이므로, potential inequality에서도 기대값을 취해야 해.
+GD와 달리 $x_{k+1}$이 random이므로, potential inequality에서도 expectation을 취해야 해.
 
 ## 2. Parameterized potential과 SDP objective
 
@@ -330,7 +330,7 @@ $$
 
 ### 3.3. Potential difference의 linearity
 
-GD에서 했던 것처럼 기대 potential 차이를 전개해 보자. $n=2$이고 $\delta_k$는 고정되어 있다고 하자.
+GD에서 했던 것처럼 expected potential difference를 전개해 보자. $n=2$이고 $\delta_k$는 고정되어 있다고 하자.
 
 $$
 \begin{aligned}
@@ -478,7 +478,7 @@ $$
 
 로 표현할 수 있어.
 
-$M$은 $L$로 정해지는 고정 행렬이고, $M_{p,q}$는 이 $M$을 현재 Gram 좌표로 옮긴 행렬이야. $M_{p,q}$에는 $\mathbf x_i=\mathbf x_0-\delta_k\mathbf G_i$가 들어가므로 step-size $\delta_k$가 달라지면 행렬도 달라질 수 있어. 한 전이의 $\delta_k$를 고정한 뒤에는 SDP의 결정변수와 무관한 상수행렬이야.
+$M$은 $L$로 정해지는 고정 행렬이고, $M_{p,q}$는 이 $M$을 현재 Gram 좌표로 옮긴 행렬이야. $M_{p,q}$에는 $\mathbf x_i=\mathbf x_0-\delta_k\mathbf G_i$가 들어가므로 step-size $\delta_k$가 달라지면 행렬도 달라질 수 있어. 한 전이의 $\delta_k$를 고정한 뒤에는 SDP의 decision variable과 무관한 상수행렬이야.
 
 논문 Appendix E.7과 같이 각 constraint에는 $\lambda_{p,q}\ge0$를 곱해. 실제 SDP에서는 각 전이 $k$마다 서로 독립적인 multiplier들을 선택해.
 
@@ -550,7 +550,7 @@ $$
 
 ### 5.2. 비음수 가중합을 더하기
 
-Appendix E.7에서는 interpolation 부등식에 $\lambda_{p,q}\ge0$을 곱하고, 분산 부등식에는 오차 계수와 같은 $e_k\ge0$을 곱해. 이를 원하는 부등식의 좌변에 더하면
+Appendix E.7에서는 interpolation 부등식에 $\lambda_{p,q}\ge0$을 곱하고, variance 부등식에는 오차 계수와 같은 $e_k\ge0$을 곱해. 이를 원하는 부등식의 좌변에 더하면
 
 $$
 \begin{aligned}
@@ -1009,7 +1009,7 @@ $$
 
 ### 9.2. Telescoping
 
-전체 $N$단계에 대해 기댓값을 취해 합산하면
+전체 $N$단계에 대해 expectation을 취해 합산하면
 
 $$
 \mathbb E[\phi_N^f] \le\phi_0^f+\sigma^2\sum_{k=0}^{N-1}e_k.
@@ -1099,7 +1099,7 @@ $$
 \boxed{ \mathbb E[f(x_N)-f_\star] =O\left(\frac{L\Vert x_0-x_\star\Vert ^2}{N^{1/3}} +\frac{\sigma^2\log N}{L\,N^{1/3}}\right). }
 $$
 
-여기까지는 논문 Table 2에서 선택한 $\alpha=2/3$을 대입했을 때의 수렴률을 확인한 거야. 다른 $\alpha$와 비교해 왜 이 지수가 최적인지는 다음 `Averaging_expansion_Theorem_6-7_Table_2.md`의 §9에서 누적합의 구간별 차수를 비교하며 유도해. 이 수렴률 계산의 원문은 Appendix E.5야.
+여기까지는 논문 Table 2에서 선택한 $\alpha=2/3$을 대입했을 때의 convergence rate를 확인한 거야. 다른 $\alpha$와 비교해 왜 이 지수가 최적인지는 다음 `Averaging_expansion_Theorem_6-7_Table_2.md`의 §9에서 누적합의 구간별 차수를 비교하며 유도해. 이 convergence rate 계산의 원문은 Appendix E.5야.
 
 ## 10. Figure 2의 수치 최적해와 Theorem 5의 차이
 
@@ -1160,6 +1160,6 @@ $$
 
 이번 절에서 가장 중요한 연결은 다음이야.
 
-GD에서는 potential 감소 자체를 증명했지만, SGD에서는 potential의 기대 증가를 variance 항으로 제어한다. 따라서 SDP도 단순히 최종 계수를 키우는 것에서 끝나지 않고, 누적 stochastic error를 얼마나 줄일 수 있는지까지 탐색하게 돼.
+GD에서는 potential 감소 자체를 증명했지만, SGD에서는 expected potential increase를 variance 항으로 제어한다. 따라서 SDP도 단순히 최종 계수를 키우는 것에서 끝나지 않고, 누적 stochastic error를 얼마나 줄일 수 있는지까지 탐색하게 돼.
 
 그리고 Figure 2에서 얻은 단순한 potential 구조에 대해 Theorem 5가 명시적인 계수 recurrence와 certificate를 제공한 것이야.
