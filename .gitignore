@@ -1,5 +1,4 @@
-# Local validation sources, reports, caches, and downloaded tools.
-/.validation/
+.archive/
 
 # Python-generated files and local environments.
 __pycache__/
