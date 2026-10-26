@@ -1,4 +1,7 @@
 .archive/
+*.pptx
+scripts/
+docs/
 
 # Python-generated files and local environments.
 __pycache__/
